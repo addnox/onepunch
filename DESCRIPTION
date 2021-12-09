@@ -1,0 +1,27 @@
+Package: onepunch
+Type: Package
+Title: Personal toolkit
+Version: 0.3.0.9999
+Authors@R: person("Charles", "Pan", email = "addnox@gmail.com", role = c("aut", "cre"))
+Description: A collections of my frequently-used functions and classes.
+License: Proprietary
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Depends:
+    R (>= 4.1.0)
+Imports: 
+    data.table (>= 1.14.2),
+    stringi,
+    fs,
+    R6,
+	  ggplot2,
+	  openxlsx,
+  	readxl,
+	  cellranger,
+	  lubridate,
+	  usethis,
+	  cli
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
