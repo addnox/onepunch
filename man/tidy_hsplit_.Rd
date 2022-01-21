@@ -4,7 +4,7 @@
 \alias{tidy_hsplit_}
 \title{Split data.table into list}
 \usage{
-tidy_hsplit_(x, cols = NULL, trim = FALSE, na.rm = TRUE)
+tidy_hsplit_(x, cols = NULL, trim = FALSE, na.rm = TRUE, keep_cols = TRUE)
 }
 \arguments{
 \item{x}{A data.frame}

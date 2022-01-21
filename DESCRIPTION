@@ -15,13 +15,13 @@ Imports:
     stringi,
     fs,
     R6,
-	  ggplot2,
-	  openxlsx,
-  	readxl,
-	  cellranger,
-	  lubridate,
-	  usethis,
-	  cli
+    ggplot2,
+    openxlsx,
+    readxl,
+    cellranger,
+    lubridate,
+    usethis,
+    cli
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

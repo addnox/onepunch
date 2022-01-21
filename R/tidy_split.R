@@ -24,7 +24,7 @@
 #' tidy_hsplit(DT, cols = c("ID1", "ID2"))
 
 #' @keywords internal
-tidy_hsplit_ <- function(x, cols = NULL, trim = FALSE, na.rm = TRUE) {
+tidy_hsplit_ <- function(x, cols = NULL, trim = FALSE, na.rm = TRUE, keep_cols = TRUE) {
   # tidy_hsplit_q is the escape version.  It preserves rownames mainly for tidy_vsplit
 
   x1 <- as.data.table(x)
@@ -64,6 +64,9 @@ tidy_hsplit_ <- function(x, cols = NULL, trim = FALSE, na.rm = TRUE) {
   ## delete rowname column
   res <- lapply(res, function(x) {setattr(x, "row.names", x[["...rn..."]]); x[, ...rn... := NULL]; x})
 
+  ## keep split-by cols
+  if (!keep_cols & !is.null(cols)) res <- lapply(res, function(DT) DT[, (cols) := NULL])
+
   ## trim each element, mainly for all-blank columns
   if (trim) res <- lapply(res, tidy_trim)
   res
@@ -71,21 +74,21 @@ tidy_hsplit_ <- function(x, cols = NULL, trim = FALSE, na.rm = TRUE) {
 
 #' Split data into list of \code{data.table}s horizontally or vertically
 #' @export
-tidy_hsplit <- function(x, cols = NULL, trim = FALSE) {
-  res <- tidy_hsplit_(x, cols = cols, trim = trim)
+tidy_hsplit <- function(x, cols = NULL, trim = FALSE,  na.rm = TRUE, keep_cols = TRUE) {
+  res <- tidy_hsplit_(x, cols = cols, trim = trim, na.rm = na.rm, keep_cols = keep_cols)
   res <- lapply(res, function(x) {setattr(x, "row.names", seq_len(nrow(x))); x})
   res
 }
 
 #' @rdname tidy_hsplit
 #' @export
-tidy_vsplit <- function(x, rows = NULL, trim = FALSE) {
+tidy_vsplit <- function(x, rows = NULL, trim = FALSE, na.rm = TRUE, keep_rows = TRUE) {
   stopifnot(is.integer(rows) | is.null(rows))
   x <- as.data.table(x)
   x1 <- data.table::transpose(x)
   rownames(x1) <- names(x)
 
-  res_t <- tidy_hsplit_(x1, cols = rows,  trim = trim)
+  res_t <- tidy_hsplit_(x1, cols = rows,  trim = trim, na.rm = na.rm, keep_cols = keep_rows)
   res <- lapply(res_t, function(x) setnames(data.table::transpose(x), rownames(x)))
   res <- lapply(res, function(x) {setattr(x, "row.names", seq_len(nrow(x))); x})
   res
