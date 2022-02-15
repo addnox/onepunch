@@ -76,6 +76,7 @@ use_common_dir <- function(wd = NULL, flavor = c("op", "gc"), create_project = T
     lapply(dir_op, dir_make, wd = wd)
   } else if (flavor == "gc") {
     lapply(dir_gc, dir_make, wd = wd)
+    create_project <- FALSE ## GC flavor is usually used for U drive dir creation, so no R project needed
   }
 
   if (create_project & length(fs::dir_ls(wd, regex = "[.]Rproj$")) == 0) {

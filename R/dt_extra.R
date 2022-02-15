@@ -126,3 +126,61 @@ dt_set <- function(DT, ...) {
 
   return(DT[])
 }
+
+#' Patch new data y to old dataset x
+#'
+#' Essentially a safer way of doing left_join
+#' @param x Data to be patched
+#' @param y Patching dataset
+#' @param by A character vector specifying common join ids
+#' @param vars A character vector specifying common fields to be patched
+#' @param ties Specify what to do when both \code{x} and \code{y} has valid values for \code{vars}
+#' @export
+#' @examples
+#' dt1 <- data.table::data.table(ID1 = c(1, 1, 2, 2, 3), ID2 = c("A", "B", "A", "C", "B"), v1 = 1:5, v2 = 5:1)
+#' dt2 <- data.table::data.table(ID1 = c(1, 2, 3), ID2 = "A", v1 = 11L, v2 = 22L)
+#' dt_patch(dt1, dt2, by = c("ID1", "ID2"), vars = c("v1"))
+#' dt_patch(dt1, dt2, by = c("ID1", "ID2"), vars = c("v1", "v2"))
+
+dt_patch <- function(x, y, by, vars, ties = c("y", "x")) {
+  x <- as.data.table(x)
+  y <- as.data.table(y)
+  ties <- match.arg(ties)
+  if (!all(by %in% colnames(x))) stop("Not all variables in `by` are in x", call. = FALSE)
+  if (!all(by %in% colnames(y))) stop("Not all variables in `by` are in y", call. = FALSE)
+  if (!all(vars %in% colnames(x))) stop("Not all variables in `vars` are in x", call. = FALSE)
+  if (!all(vars %in% colnames(x))) stop("Not all variables in `vars` are in y", call. = FALSE)
+  if (anyDuplicated(y, by = by)) stop("Variables in `by` cannot uniquely defined data `y`", call. = FALSE)
+
+  ## Joining
+  y_cols <- c(by, vars)
+  x_full <- merge(x, y[, ..y_cols], by = by, all.x = TRUE, all.y = FALSE, suffixes = c("...x", "...y"))
+
+  ## Coalescing
+  for (patch_var in vars) {
+    var_x <- paste0(patch_var, "...x")
+    var_y <- paste0(patch_var, "...y")
+    value_x <- x_full[[var_x]]
+    value_y <- x_full[[var_y]]
+
+    if (typeof(value_x) != typeof(value_y)) {
+      cli::cli_abort("Different types: {.field {var_x}} - {typeof(value_x)}; {.field {var_y}} - {typeof(value_y)}")
+    }
+
+    if (ties == "x") {
+      data.table::set(x_full, j = patch_var, value = fcoalesce(value_x, value_y))
+    } else {
+      data.table::set(x_full, j = patch_var, value = fcoalesce(value_y, value_x))
+    }
+  }
+
+  ## Delete ...x and ...y vars
+  var_pairs <- data.table::CJ(var = vars, xy = c("...x", "...y"))[, paste0(var, xy)] ## e.g. A...x, A...y
+  x_full[, (var_pairs) := NULL]
+
+  ## Restore dataset x col sequence
+  data.table::setcolorder(x_full, colnames(x))
+
+  return(x_full[])
+}
+
