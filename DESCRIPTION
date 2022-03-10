@@ -1,7 +1,7 @@
 Package: onepunch
 Type: Package
 Title: Personal toolkit
-Version: 0.3.1.0002
+Version: 0.3.1.0003
 Authors@R: person("aDdNOX", email = "addnox@gmail.com", role = c("aut", "cre"))
 Description: A collections of my frequently-used functions and classes.
 License: Proprietary

@@ -102,4 +102,11 @@ tidy_table(x, header_rows = 2:4, wide_cols = 4:16, wide_names = c("LOB", "Accoun
 tidy_table(x, header_rows = 2:4, wide_cols = 4:16, wide_names = c("LOB", "Account", "Var"), pivot = FALSE, cols_delete = NULL)
 tidy_lift_header(x, 2:4, wide_cols = 4:16)
 tidy_lift_header(x, 2:4)
+
+y <- data.table::data.table(
+  V1 = c("Gross_SI", 10),
+  V2 = c("Gross_Prem", 1),
+  V3 = c("Net_SI", 8)
+)
+tidy_table(y, 1, wide_cols = 1:3, wide_names = c("Account", "Var"), wide_split = "_")
 }

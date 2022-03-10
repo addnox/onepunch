@@ -71,3 +71,16 @@ test_that("tidy_table & tidy_lift_header", {
   expect_equal(DT4_tidy3, DT4_tidy3_expected)
 })
 
+test_that("tidy_table with wide_split", {
+  y <- data.table::data.table(
+      V1 = c("Gross_SI", 10),
+      V2 = c("Gross_Prem", 1),
+      V3 = c("Net_SI", 8)
+  )
+
+  res1 <- tidy_table(y, 1, wide_cols = 1:3, wide_names = c("Account", "Var"), wide_split = "_", wide_as_numeric = TRUE)
+  res_expected <- data.table::data.table(Account = c("Gross", "Gross", "Net"), Var = c("SI", "Prem", "SI"), value = c(10, 1, 8))
+  expect_equal(res1, res_expected)
+  res2 <- tidy_table(y, 1, wide_cols = 1:3, wide_split = "_", wide_as_numeric = TRUE)
+  expect_equal(res2, setNames(res_expected, c(".wide1", ".wide2", "value")))
+})

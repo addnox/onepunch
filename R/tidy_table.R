@@ -44,6 +44,13 @@
 #' tidy_table(x, header_rows = 2:4, wide_cols = 4:16, wide_names = c("LOB", "Account", "Var"), pivot = FALSE, cols_delete = NULL)
 #' tidy_lift_header(x, 2:4, wide_cols = 4:16)
 #' tidy_lift_header(x, 2:4)
+#'
+#' y <- data.table::data.table(
+#'   V1 = c("Gross_SI", 10),
+#'   V2 = c("Gross_Prem", 1),
+#'   V3 = c("Net_SI", 8)
+#' )
+#' tidy_table(y, 1, wide_cols = 1:3, wide_names = c("Account", "Var"), wide_split = "_")
 
 #' @export
 tidy_table <- function(DT, header_rows, long_cols = NULL, wide_cols = NULL,
@@ -148,14 +155,14 @@ tidy_header <- function(DT, long_cols = NULL, wide_cols = NULL,
   x[
     j = `:=`(
       ...col... = as.character(.I),
-      ...OriginalHeader.. = names(DT)
+      ...OriginalHeader... = names(DT)
     )
   ]
 
   x[, c("...isLong...", "...isWide...", "...delete...") := FALSE]
-  x[...OriginalHeader.. %in% cols_long, ...isLong... := TRUE]
-  x[...OriginalHeader.. %in% cols_wide, ...isWide... := TRUE]
-  x[...OriginalHeader.. %in% cols_delete, ...delete... := TRUE]
+  x[...OriginalHeader... %in% cols_long, ...isLong... := TRUE]
+  x[...OriginalHeader... %in% cols_wide, ...isWide... := TRUE]
+  x[...OriginalHeader... %in% cols_delete, ...delete... := TRUE]
 
 # Create vector for raw header for Long columns
   longname_raw <- dt_unite(copy(x), cols = wide_names_old, into = "x")[["x"]]
@@ -164,29 +171,34 @@ tidy_header <- function(DT, long_cols = NULL, wide_cols = NULL,
   ## split if needed
   if (!is.null(wide_split)) {
     dt_unite(x, 1:nrow(DT), into = "...SingleName...", na.rm = TRUE)
-    suppressWarnings(dt_separate(x, "...SingleName...", into = wide_names, extra = "complete", sep = wide_split))
-  }
-  ## make names if NULL
-  if (is.null(wide_names)) {
-    wide_names <- paste0(".wide", seq_along(wide_names_old))
-  } else if (length(wide_names) != nrow(DT)) {
-    stop("Length of wide_names is ", length(wide_names), ", but headerDT has ", nrow(DT), " rows", call. = FALSE)
-  }
+    id_names <- base::setdiff(names(x), "...SingleName...")
+    suppressWarnings(dt_separate(x, "...SingleName...", into = wide_names, sep = wide_split))
+    wide_names_old <- base::setdiff(names(x), id_names) ## dt_separate may create new names
+    wide_names <- stringi::stri_replace_first_fixed(wide_names_old, "...", ".wide")
+    setnames(x, wide_names_old, wide_names)
+  } else {
+    ## make names if NULL
+    if (is.null(wide_names)) {
+      wide_names <- paste0(".wide", seq_along(wide_names_old))
+    } else if (length(wide_names) != nrow(DT)) {
+      stop("Length of wide_names is ", length(wide_names), ", but headerDT has ", nrow(DT), " rows", call. = FALSE)
+    }
 
-  ## Fill down if needed, both allNA and long_cols will be NA
-  wide_fill <- intersect(wide_fill, seq_along(wide_names_old))
-  if (!is.null(wide_fill)) {
-    x[j = (wide_fill) := lapply(.SD, vec_nafill, direction = "down", breaks = idx_allNA | names_DT %in% cols_long),
-      .SDcols = wide_fill]
-  }
+    ## Fill down if needed, both allNA and long_cols will be NA
+    wide_fill <- intersect(wide_fill, seq_along(wide_names_old))
+    if (!is.null(wide_fill)) {
+      x[j = (wide_fill) := lapply(.SD, vec_nafill, direction = "down", breaks = idx_allNA | names_DT %in% cols_long),
+        .SDcols = wide_fill]
+    }
 
-  ## Delete column if wide_names has NA
-  cols_to_drop <- colnames(x)[which(is.na(wide_names))]
-  if (length(cols_to_drop) > 0) x[, (cols_to_drop) := NULL]
-  wide_names_old <- wide_names_old[!is.na(wide_names)]
-  wide_names <- wide_names[!is.na(wide_names)]
-  setnames(x, wide_names_old, wide_names)
-  #### Note: from now on, ncol(x) for wide columns might be fewer than nrow(DT), because of above dropping operation
+    ## Delete column if wide_names has NA
+    cols_to_drop <- colnames(x)[which(is.na(wide_names))]
+    if (length(cols_to_drop) > 0) x[, (cols_to_drop) := NULL]
+    wide_names_old <- wide_names_old[!is.na(wide_names)]
+    wide_names <- wide_names[!is.na(wide_names)]
+    setnames(x, wide_names_old, wide_names)
+    #### Note: from now on, ncol(x) for wide columns might be fewer than nrow(DT), because of above dropping operation
+  }
 
 # Clean up Long names
   ## Use cleaned wide names to create long names, in case user does not want to pivot using tidy_data
@@ -200,7 +212,7 @@ tidy_header <- function(DT, long_cols = NULL, wide_cols = NULL,
     cols_useNames <- intersect(cnames_q(DT, cols_keepnames), cols_long) ## can only use long_cols' original names
   }
 
-  x[...OriginalHeader.. %in% cols_useNames, ...LONG... := ...OriginalHeader..]
+  x[...OriginalHeader... %in% cols_useNames, ...LONG... := ...OriginalHeader...]
   ## make long names for blanks and NAs
   x[...LONG... == "" | is.na(...LONG...), ...LONG... := paste0("V", ...col...)]
 
