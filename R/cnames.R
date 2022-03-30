@@ -37,7 +37,7 @@ cnames <- function(DT, cols = NULL) {
 #' e.g. cnames_q(DT, substitute(cols))
 cnames_q <- function(DT, cols = NULL) {
   if (!is.data.frame(DT)) stop("DT must be a data.table or data.frame.", call. = FALSE)
-  DT <- as.data.table(DT)
+  DT <- data.table::as.data.table(DT)
 
   # case when cols is not a list
   if (is.null(cols)) return(names(DT)) # substitute of NULL is still NULL
@@ -62,12 +62,12 @@ cnames_q <- function(DT, cols = NULL) {
 #' @export
 ctypes <- function(DT, style = c("mode", "typeof"), as.DT = FALSE) {
   if (!is.data.frame(DT)) stop("DT must be a data.table or data.frame.", call. = FALSE)
-  DT <- as.data.table(DT)
+  DT <- data.table::as.data.table(DT)
   style <- match.arg(style)
   res <- DT[, vapply(.SD, style, character(1L))]
 
   if (as.DT) {
-    res <- data.table(name = names(res), type = res)
+    res <- data.table::data.table(name = names(res), type = res)
   }
 
   res

@@ -7,7 +7,7 @@
 #' tidy_trim(DT)
 
 tidy_trim <- function(DT) {
-  m <- as.matrix(as.data.table(DT))
+  m <- as.matrix(data.table::as.data.table(DT))
   m_na <- is.na(m)
 
   rows_allna <- rowSums(!m_na) == 0

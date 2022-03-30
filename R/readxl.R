@@ -1,15 +1,15 @@
 #' DT version of read_excel
 #'
 #' @export
-readxl <- function(wb, ws = NULL, range = NULL, rows = NULL, cols = NULL, col_names = TRUE, col_types = NULL) {
-  res <- readxl_raw(wb, ws, range, rows, cols, col_names, col_types)
+readxl <- function(wb, ws = NULL, range = NULL, rows = NULL, cols = NULL, col_names = TRUE, col_types = NULL, ...) {
+  res <- readxl_raw(wb, ws, range, rows, cols, col_names, col_types, ...)
   res
 }
 
 #' Read entire Excel sheet from cell `A1`
 #'
 #' @export
-readxl_raw <- function(wb, ws = NULL, range = NULL, rows = NULL, cols = NULL, col_names = FALSE, col_types = "text", alpha_type_cols = FALSE) {
+readxl_raw <- function(wb, ws = NULL, range = NULL, rows = NULL, cols = NULL, col_names = FALSE, col_types = "text", alpha_type_cols = FALSE, ...) {
   if (is.null(range) & is.null(rows) & is.null(cols)) range <- readxl::cell_limits(c(1L, 1L))
   if (is.null(ws)) ws <- 1L
 
@@ -23,21 +23,22 @@ readxl_raw <- function(wb, ws = NULL, range = NULL, rows = NULL, cols = NULL, co
                             col_names = col_names,
                             col_types = col_types,
                             trim_ws = FALSE,
-                            .name_repair = function(x) makenm_numbered(x, blank_only = TRUE))
+                            .name_repair = function(x) makenm_numbered(x, blank_only = TRUE),
+                            ...)
 
-  setDT(res)
+  data.table::setDT(res)
 
   if (alpha_type_cols) {# v1 to A, v3 to C and etc.
     colnum <- seq_len(ncol(res))
     newcolnm <- stringi::stri_sub(openxlsx::getCellRefs(data.frame(1, colnum)), 1L, -2L)
-    setnames(res, newcolnm)
+    data.table::setnames(res, newcolnm)
   }
 
   wb_name <-  basename(wb)
   ws_name <- ws
   if (is.integer(ws)) ws_name <- readxl::excel_sheets(wb)[ws]
 
-  setattr(res, "meta", list(workbook = wb_name, worksheet = ws_name))
+  data.table::setattr(res, "meta", list(workbook = wb_name, worksheet = ws_name))
 
   res
 }
@@ -47,7 +48,7 @@ readxl_raw <- function(wb, ws = NULL, range = NULL, rows = NULL, cols = NULL, co
 readxl_named_range <- function(wb, ws = NULL) {
   x <- openxlsx::getNamedRegions(wb)
 
-  raw <- data.table(
+  raw <- data.table::data.table(
     Sheet = attr(x, "sheet"),
     Name = x,
     Range = attr(x, "position")
@@ -99,9 +100,9 @@ readxl_list <- function(wb, ws = NULL, range, names_id = 1L) {
   if (n_cols != 2) stop("Number of columns needs to be 2", call. = FALSE)
 
   dt <- readxl_raw(wb, ws, xlrange(range), col_names = c("V1", "V2"))
-  setDT(dt)
+  data.table::setDT(dt)
 
-  res <- as.list(transpose(dt, make.names = "V1"))
+  res <- as.list(data.table::transpose(dt, make.names = "V1"))
 
   res
 }
@@ -119,7 +120,7 @@ readxl_vector <- function(wb, ws = NULL, range, data_type = c("text", "date", "n
   if (all(dim(dt) == 0)) {
     res <- character(0L)
   } else if (is.na(dim_rng[2]) || dim_rng[2] > 1) {
-    res <-transpose(dt)[[1L]]
+    res <- data.table::transpose(dt)[[1L]]
   } else {
     res <- dt[[1L]]
   }

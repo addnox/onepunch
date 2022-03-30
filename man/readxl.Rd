@@ -11,7 +11,8 @@ readxl(
   rows = NULL,
   cols = NULL,
   col_names = TRUE,
-  col_types = NULL
+  col_types = NULL,
+  ...
 )
 }
 \description{

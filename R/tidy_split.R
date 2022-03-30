@@ -27,7 +27,7 @@
 tidy_hsplit_ <- function(x, cols = NULL, trim = FALSE, na.rm = TRUE, keep_cols = TRUE) {
   # tidy_hsplit_q is the escape version.  It preserves rownames mainly for tidy_vsplit
 
-  x1 <- as.data.table(x)
+  x1 <- data.table::as.data.table(x)
   selected_cols <- cnames_q(x1, cols) ## NULL means all columns
 
   idx_blank <- rowSums(!is.na(as.matrix(x1))) == 0
@@ -44,7 +44,7 @@ tidy_hsplit_ <- function(x, cols = NULL, trim = FALSE, na.rm = TRUE, keep_cols =
 
   # clean up blanks
   by_vars <- paste0("...by", seq_along(idx_blocks))
-  setnames(idx_blocks, by_vars)
+  data.table::setnames(idx_blocks, by_vars)
 
   ## split
   x2 <- cbind(x1, idx_blocks)[!idx_blank] ## all-blank rows will be deleted automatically
@@ -58,11 +58,11 @@ tidy_hsplit_ <- function(x, cols = NULL, trim = FALSE, na.rm = TRUE, keep_cols =
 
   ## delete names for blank cuts
   if (is.null(cols)) {
-    setattr(res, "names", NULL)
+    data.table::setattr(res, "names", NULL)
   }
 
   ## delete rowname column
-  res <- lapply(res, function(x) {setattr(x, "row.names", x[["...rn..."]]); x[, ...rn... := NULL]; x})
+  res <- lapply(res, function(x) {data.table::setattr(x, "row.names", x[["...rn..."]]); x[, ...rn... := NULL]; x})
 
   ## keep split-by cols
   if (!keep_cols & !is.null(cols)) res <- lapply(res, function(DT) DT[, (cols) := NULL])
@@ -76,7 +76,7 @@ tidy_hsplit_ <- function(x, cols = NULL, trim = FALSE, na.rm = TRUE, keep_cols =
 #' @export
 tidy_hsplit <- function(x, cols = NULL, trim = FALSE,  na.rm = TRUE, keep_cols = TRUE) {
   res <- tidy_hsplit_(x, cols = cols, trim = trim, na.rm = na.rm, keep_cols = keep_cols)
-  res <- lapply(res, function(x) {setattr(x, "row.names", seq_len(nrow(x))); x})
+  res <- lapply(res, function(x) {data.table::setattr(x, "row.names", seq_len(nrow(x))); x})
   res
 }
 
@@ -84,12 +84,12 @@ tidy_hsplit <- function(x, cols = NULL, trim = FALSE,  na.rm = TRUE, keep_cols =
 #' @export
 tidy_vsplit <- function(x, rows = NULL, trim = FALSE, na.rm = TRUE, keep_rows = TRUE) {
   stopifnot(is.integer(rows) | is.null(rows))
-  x <- as.data.table(x)
+  x <- data.table::as.data.table(x)
   x1 <- data.table::transpose(x)
   rownames(x1) <- names(x)
 
   res_t <- tidy_hsplit_(x1, cols = rows,  trim = trim, na.rm = na.rm, keep_cols = keep_rows)
-  res <- lapply(res_t, function(x) setnames(data.table::transpose(x), rownames(x)))
-  res <- lapply(res, function(x) {setattr(x, "row.names", seq_len(nrow(x))); x})
+  res <- lapply(res_t, function(x) data.table::setnames(data.table::transpose(x), rownames(x)))
+  res <- lapply(res, function(x) {data.table::setattr(x, "row.names", seq_len(nrow(x))); x})
   res
 }

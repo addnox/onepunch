@@ -59,7 +59,7 @@ tidy_table <- function(DT, header_rows, long_cols = NULL, wide_cols = NULL,
                        pivot = TRUE, value_name = "value", wide_as_numeric = FALSE,
                        verbose = FALSE) {
 
-  DT <- as.data.table(DT)
+  DT <- data.table::as.data.table(DT)
 
   ## delete rows above header_rows
   if (max(header_rows) > nrow(DT)) stop("`header_rows` is out of boundary of rows of DT.", call. = FALSE)
@@ -89,8 +89,8 @@ tidy_header <- function(DT, long_cols = NULL, wide_cols = NULL,
                         wide_names = NULL, wide_fill = 1:(nrow(DT) - 1), wide_split = NULL,
                         cols_delete = NULL, cols_keepnames = NULL, clean_long_names = TRUE, verbose = FALSE) {
 # Preperation
-  DT <- as.data.table(DT)
-  x <- transpose(DT)
+  DT <- data.table::as.data.table(DT)
+  x <- data.table::transpose(DT)
   names_DT <- paste(names(DT))
 
 # Columns classification (into long or wide)
@@ -203,7 +203,7 @@ tidy_header <- function(DT, long_cols = NULL, wide_cols = NULL,
 # Clean up Long names
   ## Use cleaned wide names to create long names, in case user does not want to pivot using tidy_data
   dt_unite(x, cols = wide_names, into = "...LONG...", sep = "_", remove = FALSE, na.rm = TRUE)
-  x[, ...LONG... := fifelse(...isLong..., longname_raw, ...LONG...)]
+  x[, ...LONG... := data.table::fifelse(...isLong..., longname_raw, ...LONG...)]
 
   ## use original_header for long if specified
   if (is.null(cols_keepnames)) {
@@ -231,11 +231,11 @@ tidy_header <- function(DT, long_cols = NULL, wide_cols = NULL,
 #' @rdname tidy_table
 
 tidy_data <- function(DT, tidyHeader, pivot = TRUE, value_name = "value", wide_as_numeric = TRUE) {
-  DT <- as.data.table(DT)
+  DT <- data.table::as.data.table(DT)
   if (ncol(DT) != nrow(tidyHeader)) stop("Number of headers cannot match column number of DT.", call. = FALSE)
 
   ## rename DT for easier joining
-  setnames(DT, as.character(seq_along(DT)))
+  data.table::setnames(DT, as.character(seq_along(DT)))
 
   ## Names
   wide_names <- names(tidyHeader)[!grepl("...", names(tidyHeader), fixed = TRUE)]
@@ -253,17 +253,17 @@ tidy_data <- function(DT, tidyHeader, pivot = TRUE, value_name = "value", wide_a
     res <- copy(DT)
     if (wide_as_numeric & length(wide_cols) > 0) res[, (wide_cols) := lapply(.SD, as.numeric), .SDcols = wide_cols]
     ## all use cleaned long names
-    setnames(res, tidyHeader[["...col..."]], tidyHeader[["...LONG..."]], skip_absent = TRUE)
+    data.table::setnames(res, tidyHeader[["...col..."]], tidyHeader[["...LONG..."]], skip_absent = TRUE)
     return(res[])
   }
 
 # Pivot case
-  x <- melt(DT, measure.vars = wide_cols, ## layer_cols are names rather than positions, as some DT cols has been deleted
+  x <- data.table::melt(DT, measure.vars = wide_cols, ## layer_cols are names rather than positions, as some DT cols has been deleted
             variable.name = "...col...", variable.factor = FALSE,
             value.name = value_name)
 
   ## Rename
-  setnames(x, tidyHeader[["...col..."]], tidyHeader[["...LONG..."]], skip_absent = TRUE)
+  data.table::setnames(x, tidyHeader[["...col..."]], tidyHeader[["...LONG..."]], skip_absent = TRUE)
 
   ## Join header and data
   res <- tidyHeader[...isWide... == TRUE, c("...col...", wide_names), with = FALSE
@@ -272,7 +272,7 @@ tidy_data <- function(DT, tidyHeader, pivot = TRUE, value_name = "value", wide_a
   res[, c("...col...") := NULL]
 
   ## rearrange column orders
-  setcolorder(res, c(setdiff(colnames(res), c(wide_names, value_name)), wide_names, value_name))
+  data.table::setcolorder(res, c(setdiff(colnames(res), c(wide_names, value_name)), wide_names, value_name))
 
   ## numeric value
   if (wide_as_numeric) res[, (value_name) := lapply(.SD, as.numeric), .SDcols = value_name]

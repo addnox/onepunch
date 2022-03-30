@@ -23,15 +23,15 @@ vec_lookup <- function(x, key, value, method = c("exact", "regex"), ignore_case 
     m <- match(x, key) ## get only the first match
   } else if (method == "regex") {
     dt0 <- lapply(key, function(.k) 1L * (grepl(.k, x = x, ignore.case = ignore_case)))
-    setDT(dt0)
+    data.table::setDT(dt0)
     ## by-ref modification is the fastest way I can think of now
     for (j in seq_along(key)) {
       ## along each col
-      set(dt0, i = which(dt0[[j]] > 0), j, j)
-      set(dt0, i = which(dt0[[j]] == 0), j, NA_integer_)
+      data.table::set(dt0, i = which(dt0[[j]] > 0), j, j)
+      data.table::set(dt0, i = which(dt0[[j]] == 0), j, NA_integer_)
     }
 
-    m <- fcoalesce(dt0)
+    m <- data.table::fcoalesce(dt0)
   }
 
   res <- value[m]

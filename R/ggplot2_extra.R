@@ -37,7 +37,7 @@ theme_op <- function(base_size = 12, base_family = "",
       complete = TRUE
     )
 
-  if (x_text_angle != 0 && stringr::str_detect(show_axis, "x")) {
+  if (x_text_angle != 0 && grepl("x", show_axis)) {
     if (x_text_angle > 5 && is.null(x_text_hjust)) x_text_hjust <- 1
 
     .theme <- .theme + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = x_text_angle, hjust = x_text_hjust, color = "#4a4a4a"))
@@ -137,13 +137,13 @@ op_palette <- function(x = NULL, name = c("gc", "economist")) {
 #' @rdname op_palette
 #' @export
 op_palette_plot <- function(p) {
-  pDT <- data.table(Palette = p)[, xpos := .I]
+  pDT <- data.table::data.table(Palette = p)[, xpos := .I]
   p <- pDT |>
-    ggplot(aes(xpos, y = 1, fill = Palette)) +
-    geom_tile(width = 1, height = .5) +
-    geom_label(aes(label = xpos)) +
-    scale_fill_identity() +
-    labs(x = NULL, y = NULL) +
+    ggplot2::ggplot(ggplot2::aes(xpos, y = 1, fill = Palette)) +
+    ggplot2::geom_tile(width = 1, height = .5) +
+    ggplot2::geom_label(ggplot2::aes(label = xpos)) +
+    ggplot2::scale_fill_identity() +
+    ggplot2::labs(x = NULL, y = NULL) +
     theme_op(show_axis = "none", show_grid = "none", show_axis_text = "none")
   p
 }

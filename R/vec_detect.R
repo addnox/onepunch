@@ -47,7 +47,7 @@ vec_detect <- function(x, patterns = NULL, exclusions = NULL, offset = 0L, negat
   }
 
   if (na.rm) res <- vec_nafill(res, fill = FALSE)
-  if (offset != 0) res <- shift(res, n = offset, fill = FALSE)
+  if (offset != 0) res <- data.table::shift(res, n = offset, fill = FALSE)
 
   res
 }

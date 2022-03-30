@@ -31,7 +31,7 @@ vec_extract <- function(x, patterns, exclusions = NULL, fill_direction = NULL, i
     else {
       res_matched <- res_matched_split[, 2, drop = TRUE] # multiple columns when there is capture groups (i.e. (p) in regex)
     }
-    res <- stringi::stri_trim_both(fcoalesce(res_matched))
+    res <- stringi::stri_trim_both(data.table::fcoalesce(res_matched))
   }
 
   mat_res <- vapply(patterns, vec_extract_single_pattern, character(length(x)))

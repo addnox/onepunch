@@ -12,7 +12,7 @@
 #' vec_nafill(x, "down", breaks = c(F, F, F, F, T, F, F, F, F))
 
 vec_nafill <- function(x, direction = c("constant", "down", "up", "forwards", "backwards"), fill = NA, breaks = NULL) {
-  DT <- data.table(...x = x)
+  DT <- data.table::data.table(...x = x)
   if (!is.null(breaks) && length(x) != length(breaks)) stop("length of x and breaks must be identical.", call. = TRUE)
 
   idx <- is.na(x) | breaks
@@ -25,7 +25,7 @@ vec_nafill <- function(x, direction = c("constant", "down", "up", "forwards", "b
   if (direction != "constant") {
     idx <- replace(seq_along(x), is.na(x), NA)
     idx[breaks] <- NaN
-    res <- x[nafill(idx, type = type, nan = NaN)]
+    res <- x[data.table::nafill(idx, type = type, nan = NaN)]
   } else {
     res <- x
     res[is.na(res)] <- fill

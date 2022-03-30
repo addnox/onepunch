@@ -12,7 +12,7 @@
 #' tidy_which(x, c("limit|excess"), exclusions = "ABC")
 
 tidy_where <- function(DT, patterns, exclusions = NULL) {
-  DT <- as.data.table(DT)
+  DT <- data.table::as.data.table(DT)
 
   res <- vapply(DT, vec_detect, logical(nrow(DT)), patterns = patterns, exclusions = exclusions, USE.NAMES = FALSE)
 
@@ -27,7 +27,7 @@ tidy_which <- function(DT, patterns, exclusions = NULL, as.DT = TRUE) {
   res <- which(res_where, arr.ind = TRUE, useNames = FALSE)
   if (as.DT) {
     res <- as.data.table(res)
-    setnames(res, c("row", "col"))
+    data.table::setnames(res, c("row", "col"))
   }
   res
 }

@@ -33,8 +33,8 @@ dir_source <- function(path, recurse = FALSE, verbose = TRUE) {
 
   if (verbose) {
     ## show sourced files
-    usethis::ui_info("R Files sourced:")
-    lapply(fs::path_file(all_R_files), function(x) usethis::ui_done(usethis::ui_field(x)))
+    cli::cat_line("R Files sourced:")
+    lapply(fs::path_file(all_R_files), function(x) cli::cat_line(x))
   }
 
   invisible(TRUE)

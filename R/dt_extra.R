@@ -17,10 +17,10 @@
 #' dt_separate(copy(df), col = "x", into = paste0("v", 1:4))[]
 
 dt_separate <- function(dt, col, into = NULL, sep = "[^[:alnum:]]+", remove = TRUE, extra = c("complete", "merge", "drop")) {
-  dt <- setDT(dt)
+  dt <- data.table::setDT(dt)
   extra <- match.arg(extra)
 
-  data_split <- as.data.table(tstrsplit(dt[[col]], split = sep))
+  data_split <- data.table::as.data.table(data.table::tstrsplit(dt[[col]], split = sep))
   n_split <- ncol(data_split)
   n_into <- length(into)
 
@@ -32,13 +32,13 @@ dt_separate <- function(dt, col, into = NULL, sep = "[^[:alnum:]]+", remove = TR
 
   raw_names <- paste0("...", seq_len(n_split))
   raw_names[seq_along(into)] <- into
-  setnames(data_split, raw_names)
+  data.table::setnames(data_split, raw_names)
 
   if (n_split > n_into & n_into > 0) {
     if (extra == "merge") {
       cols_merge <-  seq(n_into, n_split)
       dt_unite(data_split, cols = cols_merge, into = "...merged...")
-      setnames(data_split, into)
+      data.table::setnames(data_split, into)
     } else if (extra == "drop") {
       cols_drop <- seq(n_into + 1, n_split)
       data_split[, (cols_drop) := NULL]
@@ -66,14 +66,14 @@ dt_separate <- function(dt, col, into = NULL, sep = "[^[:alnum:]]+", remove = TR
 #' dt_unite(copy(df), into = "new")[]
 #' dt_unite(copy(df), into = "new", na.rm = TRUE)[]
 dt_unite <- function(DT, cols = NULL, into, sep = "_", remove = TRUE, na.rm = TRUE) {
-  DT <- setDT(DT)
+  DT <- data.table::setDT(DT)
 
   if (is.null(cols)) cols <- paste(names(DT)) # use paste, otherwise colnames is by-ref and changing
 
   if (na.rm) {
-    tDT <- transpose(DT[, ..cols])
+    tDT <- data.table::transpose(DT[, ..cols])
     united <- vapply(tDT, function(x) paste0(x[!is.na(x)], collapse = sep), character(1L))
-    DT[, (into) := fifelse(united == "", NA_character_, united)]
+    DT[, (into) := data.table::fifelse(united == "", NA_character_, united)]
   } else {
     DT[, (into) := do.call(paste, c(.SD, sep = sep)), .SDcols = cols]
   }
@@ -97,13 +97,13 @@ dt_unite <- function(DT, cols = NULL, into, sep = "_", remove = TRUE, na.rm = TR
 #' dt_setcols(copy(x), !is.character, function(x) x * 100)[]
 #' dt_setcols(copy(x), .(2:3, "B"), function(x) x * 100)[]
 dt_setcols <- function(DT, cols, FUN, ...) {
-  setDT(DT)
+  data.table::setDT(DT)
 
   cols_final <- cnames_q(DT, substitute(cols))
 
   if (length(cols_final) > 0) DT[, (cols_final) := lapply(.SD, FUN, ...), .SDcols = cols_final]
 
-  DT[]
+  DT
 }
 #' Lazy-evaluation version of `:=`
 #'
@@ -124,7 +124,7 @@ dt_set <- function(DT, ...) {
     eval(substitute(DT[j = nm := vv], env = list(nm = nm[[i]], vv = exprs[[i]])))
   }
 
-  return(DT[])
+  return(DT)
 }
 
 #' Patch new data y to old dataset x
@@ -143,18 +143,18 @@ dt_set <- function(DT, ...) {
 #' dt_patch(dt1, dt2, by = c("ID1", "ID2"), vars = c("v1", "v2"))
 
 dt_patch <- function(x, y, by, vars, ties = c("y", "x")) {
-  x <- as.data.table(x)
-  y <- as.data.table(y)
+  x <- data.table::as.data.table(x)
+  y <- data.table::as.data.table(y)
   ties <- match.arg(ties)
   if (!all(by %in% colnames(x))) stop("Not all variables in `by` are in x", call. = FALSE)
   if (!all(by %in% colnames(y))) stop("Not all variables in `by` are in y", call. = FALSE)
   if (!all(vars %in% colnames(x))) stop("Not all variables in `vars` are in x", call. = FALSE)
   if (!all(vars %in% colnames(x))) stop("Not all variables in `vars` are in y", call. = FALSE)
-  if (anyDuplicated(y, by = by)) stop("Variables in `by` cannot uniquely defined data `y`", call. = FALSE)
+  if (data.table::anyDuplicated(y, by = by)) stop("Variables in `by` cannot uniquely defined data `y`", call. = FALSE)
 
   ## Joining
   y_cols <- c(by, vars)
-  x_full <- merge(x, y[, ..y_cols], by = by, all.x = TRUE, all.y = FALSE, suffixes = c("...x", "...y"))
+  x_full <- data.table::merge(x, y[, ..y_cols], by = by, all.x = TRUE, all.y = FALSE, suffixes = c("...x", "...y"))
 
   ## Coalescing
   for (patch_var in vars) {
@@ -168,9 +168,9 @@ dt_patch <- function(x, y, by, vars, ties = c("y", "x")) {
     }
 
     if (ties == "x") {
-      data.table::set(x_full, j = patch_var, value = fcoalesce(value_x, value_y))
+      data.table::set(x_full, j = patch_var, value = data.table::fcoalesce(value_x, value_y))
     } else {
-      data.table::set(x_full, j = patch_var, value = fcoalesce(value_y, value_x))
+      data.table::set(x_full, j = patch_var, value = data.table::fcoalesce(value_y, value_x))
     }
   }
 

@@ -1,7 +1,9 @@
+library(data.table)
+
 test_that("tidy_trim", {
   x <- data.table(V1 = c(NA, 1, NA, NA), V2 = c(NaN, NA, NA, NA), V3 = c(NA, "A", "B", NA))
   x_trim <- tidy_trim(x)
-  setattr(x_trim, "row.names", seq_len(nrow(x_trim)))
+  data.table::setattr(x_trim, "row.names", seq_len(nrow(x_trim)))
   expect_equal(x_trim, data.table(V1 = c(1, NA), V3 = c("A", "B")))
 })
 

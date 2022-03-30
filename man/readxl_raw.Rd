@@ -12,7 +12,8 @@ readxl_raw(
   cols = NULL,
   col_names = FALSE,
   col_types = "text",
-  alpha_type_cols = FALSE
+  alpha_type_cols = FALSE,
+  ...
 )
 }
 \description{

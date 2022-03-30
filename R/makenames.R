@@ -21,7 +21,7 @@ vec_setnames <- function(x, nm = x, overwrite = TRUE) {
       newnm[newnm == ""] <- NA_character_ ## partially named vector, blank names are denoted as "", rather than `NA`
     }
 
-    newnm <- fcoalesce(newnm, nm)
+    newnm <- data.table::fcoalesce(newnm, nm)
   }
 
   names(x) <- newnm
@@ -75,7 +75,7 @@ makenm_unique <- function(x, prefix = "V") {
   # find dups
   xDT <- data.table::data.table(x = x2)
   xDT[, `:=`(N = seq_len(.N), dup = .N > 1), by = "x"]
-  xDT[, newname := fifelse(dup, paste(x, N, sep = "..."), as.character(x))]
+  xDT[, newname := data.table::fifelse(dup, paste(x, N, sep = "..."), as.character(x))]
 
   return(xDT[["newname"]])
 }
