@@ -2,21 +2,34 @@
 #'
 #' @export
 #' @examples
-#' x <- c(1.23e12, 3.45e7, 6.78e3, 0.1, 0.012, 0.0123, pi / c(1, 100, 1000), Inf, NA)
-#' num(x, digits = 4)
-#' num(x, "P")
-#' vapply(x, num_auto, character(1L))
-#' vapply(x, num_auto, character(1L), perc_cutoff = 2)
-num <- function(x, scale = c("C", "P", "K", "M", "B", "pp"), digits = 0, sep = "", na_as = NA_character_, inf_as = "Inf") {
+#' x <- c(1.23e12, 3.45e7, -6.78e3, Inf, NA)
+#' num(x)
+#' num(x, "free")
+#' num(x, "free", inf.as = "Unlimited", na.as = "")
+num <- function(x, scale = c("auto", "free", "C", "P", "K", "M", "B", "pp"), digits = 2, na.as = NA_character_, inf.as = "Inf", ...) {
   scale <- match.arg(scale)
+  .accuracy <- 1 / 10 ^ digits
 
-  scale_factor <- switch(scale, "C" = 1, "K" = 1e3, "M" = 1e6, "B" = 1e9, "P" = .01, "pp" = .01)
-  scale_label <- switch(scale, "C" = "", "K" = "K", "M" = "M", "B" = "B", "P" = "%", "pp" = " p.p.")
-  scale_label <- paste0(sep, scale_label)
+  if (scale == "free") {
+    res <- scales::comma(x, scale_cut = scales::cut_short_scale()[-5], accuracy = .accuracy) ## get rid of trillion
+  } else if (scale == "auto") {
+    tmp_scale <- cut(abs(x), c(0, 1e3, 1e6, 1e9, Inf), c("C", "K", "M", "B"))
+    final_scale_label <- names(which.max(table(tmp_scale)))
+    if (is.na(final_scale_label)) final_scale_label <- "C"
+    final_scale_factor <- switch(final_scale_label, "C" = 1, "K" = 1e3, "M" = 1e6, "B" = 1e9)
+    if (final_scale_label == "C") final_scale_label <- ""
 
-  res <- scales::comma(x, accuracy = 1 / 10 ^ digits, scale = 1 / scale_factor, suffix = scale_label)
+    res <- scales::comma(x, accuracy = .accuracy, scale = 1 / final_scale_factor, suffix = final_scale_label, ...)
 
-  res <- ifelse(is.na(x), NA_character_, res)
+  } else {
+    scale_factor <- switch(scale, "C" = 1, "K" = 1e3, "M" = 1e6, "B" = 1e9, "P" = .01, "pp" = .01)
+    scale_label <- switch(scale, "C" = "", "K" = "K", "M" = "M", "B" = "B", "P" = "%", "pp" = " p.p.")
+
+    res <- scales::comma(x, accuracy = .accuracy, scale = 1 / scale_factor, suffix = scale_label, ...)
+  }
+
+  res <- ifelse(is.na(x), na.as, res)
+  res <- ifelse(is.infinite(x), inf.as, res)
 
   return(res)
 }
@@ -24,8 +37,8 @@ num <- function(x, scale = c("C", "P", "K", "M", "B", "pp"), digits = 0, sep = "
 
 #' @export
 #'@rdname num
-num_format <- function(scale = c("C", "P", "K", "M", "B"), digits = 0, sep = "") {
-  f <- function(x) num(x, scale, digits, sep)
+num_format <- function(scale = c("auto", "free", "C", "P", "K", "M", "B"), digits = 0, ...) {
+  f <- function(x) num(x, scale, digits, ...)
   f
 }
 

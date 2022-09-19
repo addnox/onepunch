@@ -21,6 +21,7 @@ Imports:
     cellranger,
     lubridate,
     usethis,
+    scales,
     cli
 Suggests: 
     testthat (>= 3.0.0)

@@ -8,14 +8,14 @@
 \usage{
 num(
   x,
-  scale = c("C", "P", "K", "M", "B", "pp"),
-  digits = 0,
-  sep = "",
-  na_as = NA_character_,
-  inf_as = "Inf"
+  scale = c("auto", "free", "C", "P", "K", "M", "B", "pp"),
+  digits = 2,
+  na.as = NA_character_,
+  inf.as = "Inf",
+  ...
 )
 
-num_format(scale = c("C", "P", "K", "M", "B"), digits = 0, sep = "")
+num_format(scale = c("auto", "free", "C", "P", "K", "M", "B"), digits = 0, ...)
 
 num_auto(
   x,
@@ -33,11 +33,10 @@ num_auto(
 Format numbers
 }
 \examples{
-x <- c(1.23e12, 3.45e7, 6.78e3, 0.1, 0.012, 0.0123, pi / c(1, 100, 1000), Inf, NA)
-num(x, digits = 4)
-num(x, "P")
-vapply(x, num_auto, character(1L))
-vapply(x, num_auto, character(1L), perc_cutoff = 2)
+x <- c(1.23e12, 3.45e7, -6.78e3, Inf, NA)
+num(x)
+num(x, "free")
+num(x, "free", inf.as = "Unlimited", na.as = "")
 num_auto(c(NA, 100, 1000, 10))
 num_auto(c(NA, 100, 1000, 10), prefer_digits = 1)
 num_auto(c(100e6, 200e6, 300e6))
