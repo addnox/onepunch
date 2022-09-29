@@ -4,7 +4,12 @@
 \alias{date_duration}
 \title{Calculate duration between two dates}
 \usage{
-date_duration(d1, d2, unit = c("day", "month", "quarter", "year"))
+date_duration(
+  d1,
+  d2,
+  unit = c("day", "month", "quarter", "year"),
+  round_digits = 1
+)
 }
 \arguments{
 \item{d1, d2}{vector of \code{Date} object}
@@ -15,7 +20,7 @@ date_duration(d1, d2, unit = c("day", "month", "quarter", "year"))
 Use month as basis.  Treat one "standard" month as of 30 days. Number of months are rounded to integer. e.g. 29 days are treated as 1 month, 1/3 quarter and 1/12 year
 }
 \examples{
-d <- as.Date(c("2010-03-31", "2010-06-30", "2011-09-30"))
+d <- as.Date(c("2010-03-31", "2010-06-30", "2012-12-31", "2013-1-1")) # 2012 is a leap year
 date_duration(as.Date("2010-01-01"), d, "month")
 date_duration(as.Date("2010-01-01"), d, "quarter")
 date_duration(as.Date("2010-01-01"), d, "year")

@@ -5,28 +5,31 @@
 #' @param d1,d2 vector of \code{Date} object
 #' @param unit One of month, quarter or year
 #' @examples
-#' d <- as.Date(c("2010-03-31", "2010-06-30", "2011-09-30"))
+#' d <- as.Date(c("2010-03-31", "2010-06-30", "2012-12-31", "2013-1-1")) # 2012 is a leap year
 #' date_duration(as.Date("2010-01-01"), d, "month")
 #' date_duration(as.Date("2010-01-01"), d, "quarter")
 #' date_duration(as.Date("2010-01-01"), d, "year")
 #' @export
-date_duration <- function(d1, d2, unit = c("day", "month", "quarter", "year")) {
+date_duration <- function(d1, d2, unit = c("day", "month", "quarter", "year"), round_digits = 1) {
   unit <- match.arg(unit)
 
-  ddays <- as.integer(d2 - d1)
+  tmp_int <- lubridate::interval(d1, d2)
 
   if (unit == "day") {
-    res <- ddays
+    res <- tmp_int / lubridate::ddays(1)
+  } else if (unit == "year") {
+    res <- tmp_int / lubridate::years(1)
   } else {
-    dmonth <- round(ddays / 30)
-
-    res <- switch (
-      unit,
-      month = dmonth,
-      quarter = dmonth / 3,
-      year = dmonth / 12
-    )
+    res_month <- tmp_int / lubridate::dmonths(1)
+    if (unit == "month") {
+      res <- res_month
+    } else {
+      ## quarter
+      res <- res_month / 3
+    }
   }
+
+  if (!is.na(round_digits)) res <- round(res, digits = round_digits)
 
   res
 }
