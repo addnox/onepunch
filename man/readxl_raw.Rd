@@ -2,7 +2,7 @@
 % Please edit documentation in R/readxl.R
 \name{readxl_raw}
 \alias{readxl_raw}
-\title{Read entire Excel sheet from cell `A1`}
+\title{Read entire Excel sheet from cell \code{A1}}
 \usage{
 readxl_raw(
   wb,
@@ -17,5 +17,5 @@ readxl_raw(
 )
 }
 \description{
-Read entire Excel sheet from cell `A1`
+Read entire Excel sheet from cell \code{A1}
 }

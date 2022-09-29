@@ -1,10 +1,10 @@
-#' By-ref equivalent of \code{tidyr::separate}
+#' By-ref equivalent of `tidyr::separate`
 #'
-#' @param dt A \code{data.table} or \code{data.frame}.
+#' @param dt A `data.table` or `data.frame`.
 #' @param col Column name to be split.
 #' @param into Names of new variables to create as character vector.
 #' @param sep Separator between columns.
-#' @param remove If \code{TRUE}, remove input column from output data frame.
+#' @param remove If `TRUE`, remove input column from output data frame.
 #' @param extra Controls when there are too many pieces after split.
 #'
 #' @export
@@ -51,13 +51,13 @@ dt_separate <- function(dt, col, into = NULL, sep = "[^[:alnum:]]+", remove = TR
 
   dt
 }
-#' By-ref equivalent of \code{tidyr::unite}
+#' By-ref equivalent of `tidyr::unite`
 #'
-#' @param DT A \code{data.table} or \code{data.frame}.
+#' @param DT A `data.table` or `data.frame`.
 #' @param cols A char vector containing the colnames to be united.
 #' @param into The name of the new column, as a string.
 #' @param sep Separator to use between values.
-#' @param remove If \code{TRUE}, remove input columns from output data frame.
+#' @param remove If `TRUE`, remove input columns from output data frame.
 #' @export
 #' @examples
 #' df <- as.data.table(expand.grid(x = c("a", NA), y = c("b", NA)))
@@ -134,7 +134,7 @@ dt_set <- function(DT, ...) {
 #' @param y Patching dataset
 #' @param by A character vector specifying common join ids
 #' @param vars A character vector specifying common fields to be patched
-#' @param ties Specify what to do when both \code{x} and \code{y} has valid values for \code{vars}
+#' @param ties Specify what to do when both `x` and `y` has valid values for `vars`
 #' @export
 #' @examples
 #' dt1 <- data.table::data.table(ID1 = c(1, 1, 2, 2, 3), ID2 = c("A", "B", "A", "C", "B"), v1 = 1:5, v2 = 5:1)
@@ -183,4 +183,14 @@ dt_patch <- function(x, y, by, vars, ties = c("y", "x")) {
 
   return(x_full[])
 }
-
+#'
+#' #' Distribute (i.e. dis-aggregate) x using the pattern of detailed data `d`
+#'
+#' dt_distribute <- function(x, d, by) {
+#'   x <- data.table::as.data.table(x)
+#'   d <- data.table::as.data.table(d)
+#'   if (!all(by %in% colnames(x))) stop("Not all variables in `by` are in x", call. = FALSE)
+#'   if (!all(by %in% colnames(d))) stop("Not all variables in `by` are in d", call. = FALSE)
+#'
+#'
+#' }

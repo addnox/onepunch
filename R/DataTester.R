@@ -70,7 +70,7 @@ DataTester <- R6::R6Class(
     #' @description
     #' Summarise the results for all tests
     #' @param invalid_only Logical, only show invalid tests
-    #' @param sorted Logical, whether to reorder the tests by \code{test_name}
+    #' @param sorted Logical, whether to reorder the tests by `test_name`
     summary = function(invalid_only = TRUE, sorted = FALSE) {
       toc <- lapply(
         private$.results,

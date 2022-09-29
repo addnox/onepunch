@@ -7,9 +7,9 @@
 dt_setcols(DT, cols, FUN, ...)
 }
 \arguments{
-\item{DT}{A `data.table` or `data.frame` object}
+\item{DT}{A \code{data.table} or \code{data.frame} object}
 
-\item{cols}{Fully compatible with `data.table`'s `.SDcols` parameter}
+\item{cols}{Fully compatible with \code{data.table}'s \code{.SDcols} parameter}
 }
 \description{
 Helper function to apply a function to multiple cols

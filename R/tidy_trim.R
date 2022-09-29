@@ -1,6 +1,6 @@
 #' Trim all-blank row and cols of a data.table
 #'
-#' @param DT A \code{data.table}
+#' @param DT A `data.table`
 #' @export
 #' @examples
 #' DT <- data.table(A = c(NA, 1, 2, NA, NA, 3), B = NA, C = c(NA, "A", NA, NA, NA, "B"), D = NA)

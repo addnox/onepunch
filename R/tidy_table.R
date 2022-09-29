@@ -2,16 +2,16 @@
 #'
 #'
 #' @param header_rows An integer vector specifying row numbers for headers.  The rows below will be treated as data, and the rows above will be ignored.
-#' @param long_cols Specifying long columns, \code{cnames} compatible.
-#' @param wide_cols Specifying wide columns, \code{cnames} compatible.
+#' @param long_cols Specifying long columns, `cnames` compatible.
+#' @param wide_cols Specifying wide columns, `cnames` compatible.
 #' @param wide_names Names for each layer of wide headers.
 #' @param wide_fill Position of wide header layers to be fill (to the right).
 #' @param wide_split Split character (e.g. "_") in case wide header is in single row (e.g. in form of "Gross_Premium").
-#' @param cols_delete Specifying columns to be deleted, \code{cnames} compatible.  \code{NA} means to delete all-NA headers.
-#' @param cols_keepnames Specifying columns to use Original data.frame header, \code{cnames} compatible.
-#' @param clean_long_names Logical, indicating whether to use \code{makenm_clean} for long names.
+#' @param cols_delete Specifying columns to be deleted, `cnames` compatible.  `NA` means to delete all-NA headers.
+#' @param cols_keepnames Specifying columns to use Original data.frame header, `cnames` compatible.
+#' @param clean_long_names Logical, indicating whether to use `makenm_clean` for long names.
 #' @param pivot Logical, indicating whether to pivot wide columns into long data.
-#' @param value_name Name of value column.  Only relavent when \code{pivot} is TRUE
+#' @param value_name Name of value column.  Only relavent when `pivot` is TRUE
 #' @param wide_as_numeric Logical, indicating whether to convert all wide columns into numeric type.
 #' @param verbose Logical.  Whether to show more messages.
 #'

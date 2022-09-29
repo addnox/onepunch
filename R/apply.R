@@ -1,7 +1,7 @@
 #' Loop for side-effect only
 #' @param X Vector to loop through
-#' @param FUN Function that is applied to \code{X}
-#' @param ... optional arguments to \code{FUN}
+#' @param FUN Function that is applied to `X`
+#' @param ... optional arguments to `FUN`
 #' @export
 #' @examples
 #' a <- slapply(1:3, function(x) cat("Num", x, "\n"))
@@ -22,7 +22,7 @@ slapply <- function(X, FUN, ...) {
 #' Feed elements in a list to a function
 #' @param X A list
 #' @param FUN A function
-#' @param ... optional arguments to \code{FUN}
+#' @param ... optional arguments to `FUN`
 #' @export
 #' @examples
 #' x <- list(a = 1:3, b = 4:6)

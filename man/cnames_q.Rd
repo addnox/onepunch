@@ -2,7 +2,7 @@
 % Please edit documentation in R/cnames.R
 \name{cnames_q}
 \alias{cnames_q}
-\title{Escape version of `cnames_q`, usually used inside a function}
+\title{Escape version of \code{cnames_q}, usually used inside a function}
 \usage{
 cnames_q(DT, cols = NULL)
 }

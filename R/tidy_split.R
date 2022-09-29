@@ -6,16 +6,16 @@
 #' \describe{
 #'   \item{position}{
 #'       \itemize{
-#'         \item \code{start} The matched position marks the START of one block
-#'         \item \code{end} The matched position marks the END of one block
+#'         \item `start` The matched position marks the START of one block
+#'         \item `end` The matched position marks the END of one block
 #'       }
 #'   }
 #' }
 #'
 #' @param x A data.frame
 #' @param cols Numeric vector (indicating position) or character vector (indicating colnames)
-#' @param trim Use \code{tidy_trim} for each element of output list
-#' @param na.rm When TRUE, those rows with all \code{cols} being \code{NA} will be deleted before splitting
+#' @param trim Use `tidy_trim` for each element of output list
+#' @param na.rm When TRUE, those rows with all `cols` being `NA` will be deleted before splitting
 #' @export
 #' @examples
 #' DT <- data.table(ID1 = c(NA, "A", "A", NA, NA, "B"), ID2 = c(rep("1", 4), "2", "2"), X1 = NA, X2 = c(NA, 1:2, NA, NA, 3), X3 = c(rep(NA, 5), .1))
@@ -72,7 +72,7 @@ tidy_hsplit_ <- function(x, cols = NULL, trim = FALSE, na.rm = TRUE, keep_cols =
   res
 }
 
-#' Split data into list of \code{data.table}s horizontally or vertically
+#' Split data into list of `data.table`s horizontally or vertically
 #' @export
 tidy_hsplit <- function(x, cols = NULL, trim = FALSE,  na.rm = TRUE, keep_cols = TRUE) {
   res <- tidy_hsplit_(x, cols = cols, trim = trim, na.rm = na.rm, keep_cols = keep_cols)

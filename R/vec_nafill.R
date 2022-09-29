@@ -1,4 +1,4 @@
-#' A more general \code{nafill} that can work with non-numeric data type
+#' A more general `nafill` that can work with non-numeric data type
 #'
 #' @param direction Direction in which to fill missing values.
 #'                  Currently either "down" (the default), "up", "downup" (i.e. first down and then up) or "updown" (first up and then down).

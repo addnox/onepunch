@@ -1,4 +1,4 @@
-#' Basic format for `gt` table
+#' Basic format for kable
 #'
 #' @export
 #' @details

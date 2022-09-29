@@ -2,7 +2,7 @@
 #'
 #' Useful for messy data cleaning
 #' @inheritParams vec_detect
-#' @param fill_direction If \code{NULL}, no fill.  Otherwise, passed to \code{vec_nafill}'s \code{direction} parameter.
+#' @param fill_direction If `NULL`, no fill.  Otherwise, passed to `vec_nafill`'s `direction` parameter.
 #' @param trim Whether to trim white spaces of final results.
 #' @export
 #' @examples

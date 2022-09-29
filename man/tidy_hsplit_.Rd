@@ -20,12 +20,12 @@ tidy split functions return a list of split data blocks
 }
 \details{
 \describe{
-  \item{position}{
-      \itemize{
-        \item \code{start} The matched position marks the START of one block
-        \item \code{end} The matched position marks the END of one block
-      }
-  }
+\item{position}{
+\itemize{
+\item \code{start} The matched position marks the START of one block
+\item \code{end} The matched position marks the END of one block
+}
+}
 }
 }
 \examples{

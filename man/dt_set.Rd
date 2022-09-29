@@ -2,7 +2,7 @@
 % Please edit documentation in R/dt_extra.R
 \name{dt_set}
 \alias{dt_set}
-\title{Lazy-evaluation version of `:=`}
+\title{Lazy-evaluation version of \verb{:=}}
 \usage{
 dt_set(DT, ...)
 }

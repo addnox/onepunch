@@ -13,7 +13,7 @@ num_near(x, y, tol = 1e-05)
 }
 \description{
 This is a safe way of comparing if two vectors of floating point numbers
-are (pairwise) equal.  This is safer than using `==`, because it has
+are (pairwise) equal.  This is safer than using \code{==}, because it has
 a built in tolerance
 }
 \examples{

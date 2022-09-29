@@ -80,10 +80,10 @@ makenm_unique <- function(x, prefix = "V") {
   return(xDT[["newname"]])
 }
 
-#' \code{makenm_clean} is inspired by \code{janitor::make_clean_names} and \code{snakecase::to_any_case}
+#' `makenm_clean` is inspired by `janitor::make_clean_names` and `snakecase::to_any_case`
 #'
 #' @param style Case style of names, will change the case of prefix if applicable.
-#' @param allow_na If FALSE, will replace \code{NA}s to v-prefix names, e.g. "v1".
+#' @param allow_na If FALSE, will replace `NA`s to v-prefix names, e.g. "v1".
 #' @param allow_dup If FALSE, duplicated occurrence will be labeled. e.g. "Var", "Var2", "Var3".  Note that it is case-sensitive so "var" and "Var" are viewed as different names.
 #' @rdname makenm_numbered
 #' @export

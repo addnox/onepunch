@@ -3,10 +3,10 @@
 #' @param x A character vector.
 #' @param patterns A vector means "AND" relations. See examples.
 #' @param exclusions Patterns to be excluded (i.e. set to FALSE in results).
-#' @param negate single logical value; whether a no-match to \code{patterns} is rather of interest
+#' @param negate single logical value; whether a no-match to `patterns` is rather of interest
 #' @param offset Offset the results (see sample).
-#' @param ignore.case Decide whether the \code{patterns} are case-insensitive.
-#' @param na.rm Set \code{NA}s in original data as FALSE.
+#' @param ignore.case Decide whether the `patterns` are case-insensitive.
+#' @param na.rm Set `NA`s in original data as FALSE.
 #' @export
 #' @examples
 #' x <- c(NA, NA, "layer", "no", 1, 2, 3, "layer info:")

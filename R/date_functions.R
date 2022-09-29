@@ -2,7 +2,7 @@
 #'
 #' Use month as basis.  Treat one "standard" month as of 30 days. Number of months are rounded to integer. e.g. 29 days are treated as 1 month, 1/3 quarter and 1/12 year
 #'
-#' @param d1,d2 vector of \code{Date} object
+#' @param d1,d2 vector of `Date` object
 #' @param unit One of month, quarter or year
 #' @examples
 #' d <- as.Date(c("2010-03-31", "2010-06-30", "2012-12-31", "2013-1-1")) # 2012 is a leap year

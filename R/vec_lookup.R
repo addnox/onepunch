@@ -1,4 +1,4 @@
-#' Excel \code{vlookup} equivalent
+#' Excel `vlookup` equivalent
 #'
 #' @export
 #' @examples
