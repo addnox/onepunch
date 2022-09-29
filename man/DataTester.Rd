@@ -14,6 +14,13 @@ DT <- data.table::as.data.table(mtcars)
 dt1$test_that("cyl is below 20", {DT[cyl > 20]})
 dt1$test_that("cyl cannot be 6", {DT[cyl == 6]}, "cyl2")
 dt1$test_that("There are 32 rows", {nrow(DT) == 32})
+## or wrap them all into a function
+test_f <- function() {
+  dt1 <- DataTester$new()
+  dt1$test_that("cyl is below 20", {DT[cyl > 20]})
+  dt1$test_that("cyl cannot be 6", {DT[cyl == 6]}, "cyl2")
+}
+test_f()
 }
 \section{Methods}{
 \subsection{Public methods}{
