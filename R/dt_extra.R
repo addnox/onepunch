@@ -183,6 +183,40 @@ dt_patch <- function(x, y, by, vars, ties = c("y", "x")) {
 
   return(x_full[])
 }
+
+#' Similar to `tibble::trible` to create `data.table` using row-by-row input
+#' @export
+#' @param ...
+#'   Arguments specifying the structure of a `data.table`.
+#'   Variable names should be formulas, and may only appear before the data.
+#' @examples
+#' data.trable(
+#' ~colA, ~colB,
+#' "a",   1,
+#' "b",   2,
+#' "c",   3
+#' )
+
+data.trable <- function(...) {
+  dots <- list(...)
+  headers <- Filter(function(x) class(x) == "formula", dots)
+  headers_label <- vapply(headers, function(x) as.character(as.list(x)[[2]]), character(1L))
+  n_col <- length(headers)
+  if (n_col == 0) stop("No header is found", call. = FALSE)
+  if (length(dots) %% n_col != 0) stop("Length of `...` cannot be divided by the number of headers", call. = FALSE)
+  n_row <- length(dots) / n_col - 1
+
+  res_list <- vector("list", n_col)
+  dots_data <- dots[-seq_len(n_col)]
+  for (i in 1:n_col) {
+    res_list[[i]] <- unlist(dots_data[seq(from = i, by = n_col, length.out = n_row)], recursive = FALSE, use.names = FALSE)
+    class(res_list[[i]]) <- class(dots_data[[i]])
+  }
+
+  names(res_list) <- headers_label
+  data.table::as.data.table(res_list)
+}
+
 #'
 #' #' Distribute (i.e. dis-aggregate) x using the pattern of detailed data `d`
 #'

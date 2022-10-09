@@ -3,6 +3,7 @@
 export(DataTester)
 export(cnames)
 export(ctypes)
+export(data.trable)
 export(date_duration)
 export(date_parse_excel)
 export(date_parse_month)
