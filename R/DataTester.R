@@ -28,8 +28,9 @@ DataTester <- R6::R6Class(
     #' @param desc Human-readble description for the test
     #' @param code Code for testing, can be embraced with curly bracket (i.e. {...})
     #' @param test_name Concise test id, usually for outputing as Excel sheetname.  If left blank, an id like "test-001" will be created automatically
-    #' @param cols_keep Columns in output dataset (for invalid records).  This will over-rule the cols_keep input during object initialization
-    test_that = function(desc, code, test_name = NULL, cols_keep = NULL) {
+    #' @param cols_forward Columns to bring forward in the result dataset
+    #' @param cols_keep Columns in output dataset (for invalid records).  This will add to the `cols_keep` input during object initialization
+    test_that = function(desc, code, test_name = NULL, cols_forward = NULL, cols_keep = NULL) {
       code <- substitute(code) ## borrow from test_that
       test_res <- eval(code, parent.frame())
 
@@ -55,10 +56,15 @@ DataTester <- R6::R6Class(
         cli::cat_line(desc_label, " ", msg_test_result, col = msg_color)
 
         # pick columns
-        if (is.null(cols_keep)) {
-          cols_keep <- colnames(test_res)
+        if (is.null(private$.cols_to_keep) & is.null(cols_keep)) {
+          cols_keep <- names(test_res)
         } else {
-          cols_keep <- base::intersect(c(private$cols_to_keep, cols_keep), colnames(test_res))
+          cols_keep <- base::intersect(c(private$.cols_to_keep, cols_keep), names(test_res))
+        }
+
+        if (!is.null(cols_forward)) {
+          cols_forward <- base::intersect(cols_forward, cols_keep)
+          cols_keep <- unique(c(cols_forward, cols_keep))
         }
 
         # output to results (only DT results are recorded)

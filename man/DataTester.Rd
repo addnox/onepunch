@@ -25,18 +25,18 @@ test_f()
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{DataTester$new()}}
-\item \href{#method-test_that}{\code{DataTester$test_that()}}
-\item \href{#method-summary}{\code{DataTester$summary()}}
-\item \href{#method-write_to_excel}{\code{DataTester$write_to_excel()}}
-\item \href{#method-print}{\code{DataTester$print()}}
-\item \href{#method-keep_cols}{\code{DataTester$keep_cols()}}
-\item \href{#method-clone}{\code{DataTester$clone()}}
+\item \href{#method-DataTester-new}{\code{DataTester$new()}}
+\item \href{#method-DataTester-test_that}{\code{DataTester$test_that()}}
+\item \href{#method-DataTester-summary}{\code{DataTester$summary()}}
+\item \href{#method-DataTester-write_to_excel}{\code{DataTester$write_to_excel()}}
+\item \href{#method-DataTester-print}{\code{DataTester$print()}}
+\item \href{#method-DataTester-keep_cols}{\code{DataTester$keep_cols()}}
+\item \href{#method-DataTester-clone}{\code{DataTester$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-DataTester-new"></a>}}
+\if{latex}{\out{\hypertarget{method-DataTester-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new DataTester object
 \subsection{Usage}{
@@ -52,12 +52,18 @@ Create a new DataTester object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-test_that"></a>}}
-\if{latex}{\out{\hypertarget{method-test_that}{}}}
+\if{html}{\out{<a id="method-DataTester-test_that"></a>}}
+\if{latex}{\out{\hypertarget{method-DataTester-test_that}{}}}
 \subsection{Method \code{test_that()}}{
 Create a new test
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataTester$test_that(desc, code, test_name = NULL, cols_keep = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{DataTester$test_that(
+  desc,
+  code,
+  test_name = NULL,
+  cols_forward = NULL,
+  cols_keep = NULL
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -69,14 +75,16 @@ Create a new test
 
 \item{\code{test_name}}{Concise test id, usually for outputing as Excel sheetname.  If left blank, an id like "test-001" will be created automatically}
 
-\item{\code{cols_keep}}{Columns in output dataset (for invalid records).  This will over-rule the cols_keep input during object initialization}
+\item{\code{cols_forward}}{Columns to bring forward in the result dataset}
+
+\item{\code{cols_keep}}{Columns in output dataset (for invalid records).  This will add to the \code{cols_keep} input during object initialization}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-summary"></a>}}
-\if{latex}{\out{\hypertarget{method-summary}{}}}
+\if{html}{\out{<a id="method-DataTester-summary"></a>}}
+\if{latex}{\out{\hypertarget{method-DataTester-summary}{}}}
 \subsection{Method \code{summary()}}{
 Summarise the results for all tests
 \subsection{Usage}{
@@ -94,8 +102,8 @@ Summarise the results for all tests
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-write_to_excel"></a>}}
-\if{latex}{\out{\hypertarget{method-write_to_excel}{}}}
+\if{html}{\out{<a id="method-DataTester-write_to_excel"></a>}}
+\if{latex}{\out{\hypertarget{method-DataTester-write_to_excel}{}}}
 \subsection{Method \code{write_to_excel()}}{
 Output test summary and invalid datasets to Excel
 \subsection{Usage}{
@@ -111,8 +119,8 @@ Output test summary and invalid datasets to Excel
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-DataTester-print"></a>}}
+\if{latex}{\out{\hypertarget{method-DataTester-print}{}}}
 \subsection{Method \code{print()}}{
 For S3 print method
 \subsection{Usage}{
@@ -121,8 +129,8 @@ For S3 print method
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-keep_cols"></a>}}
-\if{latex}{\out{\hypertarget{method-keep_cols}{}}}
+\if{html}{\out{<a id="method-DataTester-keep_cols"></a>}}
+\if{latex}{\out{\hypertarget{method-DataTester-keep_cols}{}}}
 \subsection{Method \code{keep_cols()}}{
 Overwrite keep_cols on the flight
 \subsection{Usage}{
@@ -138,8 +146,8 @@ Overwrite keep_cols on the flight
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-DataTester-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-DataTester-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
