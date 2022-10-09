@@ -209,8 +209,8 @@ data.trable <- function(...) {
   res_list <- vector("list", n_col)
   dots_data <- dots[-seq_len(n_col)]
   for (i in 1:n_col) {
-    res_list[[i]] <- unlist(dots_data[seq(from = i, by = n_col, length.out = n_row)], recursive = FALSE, use.names = FALSE)
-    class(res_list[[i]]) <- class(dots_data[[i]])
+    res_list[[i]] <- Reduce(c, dots_data[seq(from = i, by = n_col, length.out = n_row)])
+    #class(res_list[[i]]) <- class(dots_data[[i]])
   }
 
   names(res_list) <- headers_label

@@ -54,7 +54,6 @@ test_that("data.trable() handles columns with a class", {
     dt = c(as.Date("2023-11-12"), as.Date("2003-01-02")),
     dttm = c(as.POSIXct("2024-12-05 02:13:59"), as.POSIXct("2004-04-05 13:45:17"))
   )
-  attr(date_time_col_expectation$dttm, "tzone") <- NULL
 
   expect_equal(date_time_col, date_time_col_expectation)
 })
