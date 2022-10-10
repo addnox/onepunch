@@ -25,7 +25,7 @@ use_options <- function(set = c("op")) {
 #' Create common directory structure for analysis
 #'
 #' @export
-use_common_dir <- function(wd = NULL, flavor = c("op", "gc"), create_project = TRUE) {
+use_common_dir <- function(wd = NULL, flavor = c("concise", "full"), create_project = TRUE) {
   flavor <- match.arg(flavor)
   if (is.null(wd)) wd <- getwd()
 
@@ -35,12 +35,12 @@ use_common_dir <- function(wd = NULL, flavor = c("op", "gc"), create_project = T
     "fig",
     "data/raw",
     "data/modeling",
-    "data/deliverable",
     "data/ref",
     "data/interim",
     "scripts", # where to put R scripts, usually with interactive use
     "src",     # where to put R functions for later sourcing
-    "tests"
+    "tests",
+    "deliverable" # move deliverable out of data/ folder
   )
 
   dir_gc <- c(

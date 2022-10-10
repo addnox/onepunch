@@ -4,7 +4,7 @@
 \alias{use_common_dir}
 \title{Create common directory structure for analysis}
 \usage{
-use_common_dir(wd = NULL, flavor = c("op", "gc"), create_project = TRUE)
+use_common_dir(wd = NULL, flavor = c("concise", "full"), create_project = TRUE)
 }
 \description{
 Create common directory structure for analysis
