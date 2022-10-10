@@ -1,12 +1,14 @@
 Package: onepunch
 Type: Package
 Title: Personal toolkit
-Version: 0.3.1.0004
-Authors@R: person("aDdNOX", email = "addnox@gmail.com", role = c("aut", "cre"))
+Version: 0.3.2.0001
+Authors@R: 
+    person("Charles", "Pan", , "addnox@gmail.com", role = c("aut", "cre"))
 Description: A collections of my frequently-used functions and classes.
-License: Proprietary
+License: file LICENSE
 Encoding: UTF-8
 LazyData: true
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Depends:
     R (>= 4.1.0)
@@ -15,7 +17,6 @@ Imports:
     stringi,
     fs,
     R6,
-    ggplot2,
     openxlsx,
     readxl,
     cellranger,
@@ -26,4 +27,3 @@ Imports:
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-Roxygen: list(markdown = TRUE)
