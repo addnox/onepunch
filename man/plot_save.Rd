@@ -2,9 +2,19 @@
 % Please edit documentation in R/gg_extra.R
 \name{plot_save}
 \alias{plot_save}
+\alias{plot_save_base}
 \title{output a ggplot chart}
 \usage{
 plot_save(plt, file, width = 9, height = 6)
+
+plot_save_base(plt, file, width = 9, height = 6)
+}
+\arguments{
+\item{plt}{Plot object}
+
+\item{file}{File name (with path)}
+
+\item{width, height}{Width and height in inches}
 }
 \description{
 output a ggplot chart

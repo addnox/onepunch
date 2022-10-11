@@ -1,3 +1,29 @@
+#' Nest a data.table
+#'
+#' @param DT A `data.table`
+#' @param by Var names used for grouping
+#' @param key_name Name for the list-column
+#' @param keep Logical, whether to keep `by` columns in the list-column
+#' @export
+#' @examples
+#' x <- data.table::data.table(Id  = c("A", "A", "C", "C"),
+#'                 X1  = c(1L, 3L, 5L, 7L),
+#'                 XY  = c("x2", "x4", "x6", "x8"),
+#'                 key = "Id")
+#' x |> dt_nest(by = "Id")
+#' x |> dt_nest(by = "Id", keep = TRUE)
+
+dt_nest <- function(DT, by, key_name = "data", keep = FALSE) {
+  DT <- data.table::as.data.table(DT)
+  if (keep) {
+    res <- DT[, setNames(.(.(cbind(.BY, .SD))), key_name), by = by]
+  } else {
+    res <- DT[, setNames(.(.(.SD)), key_name), by = by]
+  }
+
+  res
+}
+
 #' By-ref equivalent of `tidyr::separate`
 #'
 #' @param dt A `data.table` or `data.frame`.

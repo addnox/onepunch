@@ -98,6 +98,9 @@ theme_op <- function(base_size = 12, base_family = "",
 }
 
 #' output a ggplot chart
+#' @param plt Plot object
+#' @param file File name (with path)
+#' @param width,height Width and height in inches
 #' @export
 
 plot_save <- function(plt, file, width = 9, height = 6) {
@@ -109,6 +112,21 @@ plot_save <- function(plt, file, width = 9, height = 6) {
 
   ggplot2::ggsave(file, plot = plt, width = width, height = height)
   (plt)
+}
+
+#' @export
+#' @rdname plot_save
+plot_save_base <- function(plt, file, width = 9, height = 6) {
+  if (basename(file) == file) {
+    file_path <- paste0(getwd(), "/fig/")
+    if (!dir.exists(file_path)) dir.create(file_path)
+    file <- file.path(file_path, file)
+  }
+
+  png(file, width = width, height = height, units = "in", res = 300, type = "cairo")
+  plt
+  suppressMessages(dev.off())
+  invisible(NULL)
 }
 
 #' A selection of color palettes

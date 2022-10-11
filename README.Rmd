@@ -1,5 +1,9 @@
 ---
-output: github_document
+date: 2022-10-11
+output: 
+  github_document:
+    toc: true
+    toc_depth: 2
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -34,12 +38,12 @@ You can install the development version of onepunch from [GitHub](https://github
 devtools::install_github("addnox/onepunch")
 ```
 
-## 1. Data Wrangling
+## Data Wrangling Functions
 
 - `readxl`-family functions can help to read Excel contents as `data.table`, `vector` or `list`.
 - `tidy`-family functions are for cleaning untidy data into long form.
 
-## 2. Helper Functions
+## Helper Functions
 - `dt`-functions are trying to make some routine work easier for `data.table` (e.g. `separate`).
 - `vec`-functions are for vector-operations, which are usually working hand-in-hand with `tidy`-functions.
 - `stri`-functions are extra string operations that are missing in `stringi` package.
@@ -47,5 +51,5 @@ devtools::install_github("addnox/onepunch")
 - `DataTester` is a R6 class to test data and output the results into an Excel file.
 - There are also some extensions on `ggplot2` (for making charts) and `gt` (for making tables).
 
-## 3. Reinsurance Analytical Work
+## Functions for Reinsurance Analytical Work
 - `term`-functions to calculate different reinsurance terms (commission, loss participation and etc.)

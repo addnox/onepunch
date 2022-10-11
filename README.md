@@ -1,3 +1,14 @@
+2022-10-11
+
+- <a href="#onepunch" id="toc-onepunch">onepunch</a>
+  - <a href="#installation" id="toc-installation">Installation</a>
+  - <a href="#data-wrangling-functions"
+    id="toc-data-wrangling-functions">Data Wrangling Functions</a>
+  - <a href="#helper-functions" id="toc-helper-functions">Helper
+    Functions</a>
+  - <a href="#functions-for-reinsurance-analytical-work"
+    id="toc-functions-for-reinsurance-analytical-work">Functions for
+    Reinsurance Analytical Work</a>
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -25,13 +36,13 @@ You can install the development version of onepunch from
 devtools::install_github("addnox/onepunch")
 ```
 
-## 1. Data Wrangling
+## Data Wrangling Functions
 
 - `readxl`-family functions can help to read Excel contents as
   `data.table`, `vector` or `list`.
 - `tidy`-family functions are for cleaning untidy data into long form.
 
-## 2. Helper Functions
+## Helper Functions
 
 - `dt`-functions are trying to make some routine work easier for
   `data.table` (e.g. `separate`).
@@ -45,7 +56,7 @@ devtools::install_github("addnox/onepunch")
 - There are also some extensions on `ggplot2` (for making charts) and
   `gt` (for making tables).
 
-## 3. Reinsurance Analytical Work
+## Functions for Reinsurance Analytical Work
 
 - `term`-functions to calculate different reinsurance terms (commission,
   loss participation and etc.)
