@@ -17,6 +17,8 @@ Imports:
     stringi,
     fs,
     R6,
+    ggplot2,
+    gt,
     openxlsx,
     readxl,
     cellranger,
