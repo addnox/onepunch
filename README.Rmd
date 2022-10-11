@@ -1,0 +1,51 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# onepunch
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of `onepunch` is to facilitate the everyday work as a reinsurance actuary.  It is a collection of different functionality, which I will brief later.  Also note that `onepunch` accepts `data.table` as the main data-wrangling package, rather than using `tidyverse`-family.
+
+Below introduction will be outlined into 3 categories: 
+1. Data Wrangling
+2. Helper Functions
+3. Reinsurance Analytical Work
+
+## Installation
+
+You can install the development version of onepunch from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("addnox/onepunch")
+```
+
+## 1. Data Wrangling
+
+- `readxl`-family functions can help to read Excel contents as `data.table`, `vector` or `list`.
+- `tidy`-family functions are for cleaning untidy data into long form.
+
+## 2. Helper Functions
+- `dt`-functions are trying to make some routine work easier for `data.table` (e.g. `separate`).
+- `vec`-functions are for vector-operations, which are usually working hand-in-hand with `tidy`-functions.
+- `stri`-functions are extra string operations that are missing in `stringi` package.
+- `date`-functions to work with dates and periods.
+- `DataTester` is a R6 class to test data and output the results into an Excel file.
+- There are also some extensions on `ggplot2` (for making charts) and `gt` (for making tables).
+
+## 3. Reinsurance Analytical Work
+- `term`-functions to calculate different reinsurance terms (commission, loss participation and etc.)
