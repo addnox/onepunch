@@ -1,6 +1,6 @@
 Package: onepunch
 Type: Package
-Title: Personal toolkit
+Title: Personal toolkit for `data.table` based data wrangling and reinsurance analytical work
 Version: 0.3.2.0001
 Authors@R: 
     person("Charles", "Pan", , "addnox@gmail.com", role = c("aut", "cre"))

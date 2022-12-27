@@ -5,9 +5,9 @@
 \alias{tidy_vsplit}
 \title{Split data into list of \code{data.table}s horizontally or vertically}
 \usage{
-tidy_hsplit(x, cols = NULL, trim = FALSE, na.rm = TRUE, keep_cols = TRUE)
+tidy_hsplit(x, by = NULL, na.rm = FALSE, keep.by = TRUE, factor.by = FALSE)
 
-tidy_vsplit(x, rows = NULL, trim = FALSE, na.rm = TRUE, keep_rows = TRUE)
+tidy_vsplit(x, by = NULL, na.rm = TRUE, keep.by = TRUE, factor.by = FALSE)
 }
 \description{
 Split data into list of \code{data.table}s horizontally or vertically

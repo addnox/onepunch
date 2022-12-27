@@ -19,14 +19,14 @@ tDT3 <- transpose(DT3)
 
 test_that("tidy_hsplit", {
   expect_equal(tidy_hsplit(DT), list(DT[2:3], DT[6]))
-  expect_equal(tidy_hsplit(DT, trim = TRUE), list(data.table(X2 = 1:2), data.table(X2 = 3, X3 = .1)))
-  expect_equal(tidy_hsplit(DT1, cols = 1L), list(A = DT1[2:3], B = DT1[6]))
+  expect_equal(tidy_hsplit(DT1, by = 1L), list(A = DT1[2:3], B = DT1[6]))
+  expect_equal(tidy_hsplit(DT1, by = c("A", "A", "A", "B", "B", "B"), factor.by = TRUE), list(A = DT1[2:3], B = DT1[6]))
 })
 
 test_that("tidy_vsplit", {
   expect_equal(tidy_vsplit(tDT), list(tDT[, 2:3], tDT[, 6]))
-  expect_equal(tidy_vsplit(tDT, trim = TRUE), list(data.table(V2 = 1, V3 = 2), data.table(V6 = c(3, .1))))
-  expect_equal(tidy_vsplit(tDT1, rows = 1L), list(A = tDT1[, 2:3], B = tDT1[, 6]))
+  expect_equal(tidy_vsplit(tDT1, by = 1L), list(A = tDT1[, 2:3], B = tDT1[, 6]))
+  expect_equal(tidy_vsplit(tDT1, c("A", "A", "A", "B", "B", "B"), factor.by = TRUE), list(A = tDT1[, 2:3], B = tDT1[, 6]))
 })
 
 DT4 <- data.table::data.table(

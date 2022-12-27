@@ -57,3 +57,17 @@ test_that("data.trable() handles columns with a class", {
 
   expect_equal(date_time_col, date_time_col_expectation)
 })
+
+test_that("dt_patch produces correct results", {
+  dt1 <- data.table::data.table(ID1 = c(1, 1, 2, 2, 3), ID2 = c("A", "B", "A", "C", "B"), v1 = c(NA, 2:5), v2 = c(NA, LETTERS[4:1]), v3 = lubridate::ymd("2021-01-01", "2022-01-01", "2023-01-01",  "2022-01-01", "2023-01-01"))
+  dt2 <- data.table::data.table(ID1 = c(1, 2, 3), ID2 = "A", v1 = 11L, v2 = "K", v3 = lubridate::ymd(20111231))
+
+  res_expected_1 <- data.table::data.table(ID1 = c(1, 1, 2, 2, 3), ID2 = c("A", "B", "A", "C", "B"), v1 = c(11, 2, 11, 4, 5), v2 = c("K", "D", "K", "B", "A"),  v3 = lubridate::ymd(20111231, 20220101, 20111231, 20220101, 20230101))
+  res_expected_2 <- data.table::data.table(ID1 = c(1, 1, 2, 2, 3), ID2 = c("A", "B", "A", "C", "B"), v1 = c(11, 2, 3, 4, 5), v2 = c("K", "D", "C", "B", "A"),  v3 = lubridate::ymd(20210101, 20220101, 20230101, 20220101, 20230101))
+
+  res_actual_1 <- dt_patch(dt1, dt2, by = c("ID1", "ID2"), vars = c("v1", "v2", "v3"), ties = "y")
+  res_actual_2 <- dt_patch(dt1, dt2, by = c("ID1", "ID2"), vars = c("v1", "v2", "v3"), ties = "x")
+
+  expect_equal(res_actual_1, res_expected_1)
+  expect_equal(res_actual_2, res_expected_2)
+})

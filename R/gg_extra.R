@@ -101,33 +101,23 @@ theme_op <- function(base_size = 12, base_family = "",
 #' @param plt Plot object
 #' @param file File name (with path)
 #' @param width,height Width and height in inches
+#' @param scale Scale factor for `width` and `height`.  If `scale` is 2, and `width` is 10, then scaled width will be 20
 #' @export
-
-plot_save <- function(plt, file, width = 9, height = 6) {
+gg_save <- function(plt, file, width = 9, height = 6, scale = 1) {
   if (basename(file) == file) {
     file_path <- paste0(getwd(), "/fig/")
     if (!dir.exists(file_path)) dir.create(file_path)
     file <- file.path(file_path, file)
   }
 
-  ggplot2::ggsave(file, plot = plt, width = width, height = height)
+  ggplot2::ggsave(file, plot = plt, width = width, height = height, scale = scale)
   (plt)
 }
 
 #' @export
-#' @rdname plot_save
-plot_save_base <- function(plt, file, width = 9, height = 6) {
-  if (basename(file) == file) {
-    file_path <- paste0(getwd(), "/fig/")
-    if (!dir.exists(file_path)) dir.create(file_path)
-    file <- file.path(file_path, file)
-  }
+#' @rdname gg_save
 
-  png(file, width = width, height = height, units = "in", res = 300, type = "cairo")
-  plt
-  suppressMessages(dev.off())
-  invisible(NULL)
-}
+plot_save <- gg_save
 
 #' A selection of color palettes
 #'
@@ -144,14 +134,55 @@ palette_op <- function(name = c("gc", "economist"), idx = NULL) {
   )
 
   paletteChosen <- paletteList[[name]]
-  names(paletteChosen) <- seq_along(paletteChosen)
-  if (!is.null(idx)) paletteChosen <- paletteChosen[idx]
+  if (is.null(idx)) idx <- seq_along(paletteChosen)
+  paletteChosen <- paletteChosen[idx]
 
-  structure(paletteChosen, class = "ColorScheme")
+  structure(paletteChosen, class = "ColorScheme", idx = idx)
 }
 
 #' @exportS3Method
 plot.ColorScheme <- function(p, ...) {
-  barplot(height = rep(1, times = length(p)), col = p, names.arg = names(p), border = NA, axes = FALSE)
+  idx <- attr(p, "idx")
+  barplot(height = rep(1, times = length(p)), col = p, names.arg = idx, border = NA, axes = FALSE)
 }
 
+#' Helper function for dual-y-axis plot
+#' @param y_left,y_right Numeric vector.
+#'   If with two elements, linear transformation will be used
+#'   If longer than two, min/max (or zero/max, if `force_zero` is `TRUE`) are used for linear transformation
+#' @export
+#' @examples
+#' a <- data.table(Year = 2021:2023, Value = c(10, 12, 9), Growth = c(-.1, .2, -.25))
+#' trans1 <- transform_dual_axis(c(10, 20), c(0, .2))
+#' trans2 <- transform_dual_axis(a$Value, a$Growth)
+#' trans3 <- transform_dual_axis(a$Value, a$Growth, force_zero = TRUE)
+#' ggplot(a, aes(Year, Value)) +
+#' geom_col() +
+#' geom_line(aes(y = trans2$to_left(Growth))) +
+#' scale_y_continuous(sec.axis = sec_axis(trans = trans2$trans))
+#'
+transform_dual_axis <- function(y_left, y_right, force_zero = FALSE) {
+  min_primary <- min(y_left, na.rm = TRUE)
+  min_secondary <- min(y_right, na.rm = TRUE)
+  max_primary <- max(y_left, na.rm = TRUE)
+  max_secondary <- max(y_right, na.rm = TRUE)
+
+  if (force_zero) {
+    min_primary <- 0
+    min_secondary <- 0
+  }
+
+  b <- (max_secondary - min_secondary) / (max_primary - min_primary)
+  a <- max_secondary - b * max_primary
+
+  to_left <- function(x) (x - a) / b
+  to_right <- function(x) a + b * x # sec_axis's trans function is converting primary to secondary
+
+  res <- list(
+    to_left = to_left,
+    trans = to_right,
+    to_right = to_right
+  )
+
+  return(res)
+}

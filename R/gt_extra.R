@@ -16,21 +16,16 @@
 #'   )
 #'   gt_op(x, title = "Price Table")
 #'   gt_op(x, title = "Price Table", title_block_color = "blue")
-#'   gt_op(x, cols_pct = "Price_ROL", spanner_split = "_", theme = "green", title = "Price Table")
+#'   gt_op(x, spanner_split = "_", theme = "green", title = "Price Table") |> gt::fmt_number(2:3, suffixing = TRUE)
 
-gt_op <- function(DT, theme = c("blue", "blue.fill", "green", "green.fill"), cols_pct = NULL, spanner_split = NA, title = NULL, title_block_color = "#ee1c25", missing_text = "",...) {
+gt_op <- function(DT, theme = c("blue", "blue.fill", "green", "green.fill"), spanner_split = NA, title = NULL, title_block_color = "#ee1c25", missing_text = "",...) {
   DT <- data.table::as.data.table(DT)
-  .cols_num_all <- DT[, names(.SD), .SDcols = is.numeric]
-  .cols_num <- setdiff(.cols_num_all, cols_pct)
-  .cols_pct <- intersect(names(x), cols_pct)
 
   theme <- match.arg(theme)
   .theme_color <- ifelse(grepl("^blue", theme), "blue", "cyan")
   .theme_style <- ifelse(grepl("fill$", theme), 6, 1)
 
   gt0 <- gt::gt(DT, ...) |>
-    gt::fmt_number(.cols_num, suffixing = TRUE) |>
-    gt::fmt_percent(.cols_pct) |>
     gt::sub_missing(missing_text = missing_text) |>
     gt::opt_stylize(style = .theme_style, color = .theme_color, add_row_striping = TRUE)
 
@@ -60,4 +55,24 @@ gt_op <- function(DT, theme = c("blue", "blue.fill", "green", "green.fill"), col
     )
 
   gt0
+}
+
+#' @export
+gt_save <- function(gt, file, vwidth = 1000, vheight = 800, expand = 10, trim = FALSE, ...) {
+  if (basename(file) == file) {
+    file_path <- paste0(getwd(), "/fig/")
+    if (!dir.exists(file_path)) dir.create(file_path)
+    file <- file.path(file_path, file)
+  }
+
+  suppressMessages(gt::gtsave(gt, file, vwidth = vwidth, vheight = vheight, expand = expand, ...))
+
+  if (trim & requireNamespace("magick", quietly = TRUE)) {
+    img_rework <- magick::image_read(file)
+    img_rework <- magick::image_trim(img_rework)
+    img_info <- magick::image_info(img_rework)
+    magick::image_write(img_rework, file)
+    attr(file, "info") <- img_info
+  }
+  (gt)
 }

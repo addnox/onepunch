@@ -25,7 +25,7 @@ use_options <- function(set = c("op")) {
 #' Create common directory structure for analysis
 #'
 #' @export
-use_common_dir <- function(wd = NULL, flavor = c("concise", "full"), create_project = TRUE) {
+use_common_dir <- function(wd = NULL, flavor = c("concise", "gc"), create_project = TRUE) {
   flavor <- match.arg(flavor)
   if (is.null(wd)) wd <- getwd()
 
@@ -72,7 +72,7 @@ use_common_dir <- function(wd = NULL, flavor = c("concise", "full"), create_proj
     "OriginalData"
   )
 
-  if (flavor == "op") {
+  if (flavor == "concise") {
     lapply(dir_op, dir_make, wd = wd)
   } else if (flavor == "gc") {
     lapply(dir_gc, dir_make, wd = wd)

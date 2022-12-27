@@ -7,7 +7,6 @@
 gt_op(
   DT,
   theme = c("blue", "blue.fill", "green", "green.fill"),
-  cols_pct = NULL,
   spanner_split = NA,
   title = NULL,
   title_block_color = "#ee1c25",
@@ -36,5 +35,5 @@ x <- data.table::data.table(
   )
   gt_op(x, title = "Price Table")
   gt_op(x, title = "Price Table", title_block_color = "blue")
-  gt_op(x, cols_pct = "Price_ROL", spanner_split = "_", theme = "green", title = "Price Table")
+  gt_op(x, spanner_split = "_", theme = "green", title = "Price Table") |> gt::fmt_number(2:3, suffixing = TRUE)
 }

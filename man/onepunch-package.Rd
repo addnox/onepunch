@@ -4,7 +4,7 @@
 \name{onepunch-package}
 \alias{onepunch}
 \alias{onepunch-package}
-\title{onepunch: Personal toolkit}
+\title{onepunch: Personal toolkit for `data.table` based data wrangling and reinsurance analytical work}
 \description{
 A collections of my frequently-used functions and classes.
 }

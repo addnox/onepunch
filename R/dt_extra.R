@@ -176,11 +176,11 @@ dt_patch <- function(x, y, by, vars, ties = c("y", "x")) {
   if (!all(by %in% colnames(y))) stop("Not all variables in `by` are in y", call. = FALSE)
   if (!all(vars %in% colnames(x))) stop("Not all variables in `vars` are in x", call. = FALSE)
   if (!all(vars %in% colnames(x))) stop("Not all variables in `vars` are in y", call. = FALSE)
-  if (data.table::anyDuplicated(y, by = by)) stop("Variables in `by` cannot uniquely defined data `y`", call. = FALSE)
+  if (anyDuplicated(y, by = by)) stop("Variables in `by` cannot uniquely defined data `y`", call. = FALSE)
 
   ## Joining
   y_cols <- c(by, vars)
-  x_full <- data.table::merge(x, y[, ..y_cols], by = by, all.x = TRUE, all.y = FALSE, suffixes = c("...x", "...y"))
+  x_full <- merge(x, y[, ..y_cols], by = by, all.x = TRUE, all.y = FALSE, suffixes = c("...x", "...y"), sort = FALSE)
 
   ## Coalescing
   for (patch_var in vars) {
@@ -189,7 +189,7 @@ dt_patch <- function(x, y, by, vars, ties = c("y", "x")) {
     value_x <- x_full[[var_x]]
     value_y <- x_full[[var_y]]
 
-    if (typeof(value_x) != typeof(value_y)) {
+    if (typeof(value_x) != typeof(value_y)) { #`typeof` will treat Date and POSIXct as double
       cli::cli_abort("Different types: {.field {var_x}} - {typeof(value_x)}; {.field {var_y}} - {typeof(value_y)}")
     }
 

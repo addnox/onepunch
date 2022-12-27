@@ -4,7 +4,7 @@
 \alias{as_triangle}
 \title{Convert a \code{data.table} object to \code{triangle}}
 \usage{
-as_triangle(DT, origin = 1L)
+as_triangle(DT, origin = 1L, fill = TRUE)
 }
 \description{
 Convert a \code{data.table} object to \code{triangle}
@@ -13,4 +13,7 @@ Convert a \code{data.table} object to \code{triangle}
 prem <- as_triangle(TRI$Premium)
 loss <- as_triangle(TRI$Incurred)
 loss / prem
+DT_Prem_withNA <- data.table::copy(TRI$Premium)[Year == 2009, `1` := NA]
+as_triangle(DT_Prem_withNA)
+as_triangle(DT_Prem_withNA, fill = FALSE)
 }

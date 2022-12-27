@@ -11,7 +11,7 @@ Complete the input triangle using CapeCod B-F method
 }
 \examples{
 prem <- as_triangle(TRI$Premium)
-ultprem <- dev_ChainLadder(tri_premium)[, ncol(tri_premium) + 1]
+ultprem <- dev_ChainLadder(prem)[, ncol(prem) + 1]
 loss <- as_triangle(TRI$Incurred)
 dev_CapeCod(loss, ultprem)
 }
