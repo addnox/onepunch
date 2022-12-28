@@ -2,7 +2,7 @@
 #' @param RiskProfile A `data.frame` containing at least the following 3 columns: `N`, `SI` and `Premium`
 #' @param SubjectPremium Numeric, Subject premium to scale `RiskProfile`'s total premium
 #' @param ExpectLossRatio Numeric, loss ratio to convert `SubjectPremium` to `ExpectLoss`
-#' @param RiskCurve A `RiskCurve` object, created by `RiskCurve` function
+#' @param RiskCurve Created by `RiskCurve` function, or a risk curve function
 #' @details
 #'   The `PropExposureRating` class support the following methods:
 #'   - `loss_in_layer`
@@ -10,13 +10,19 @@
 #' @export
 #'
 
-PropExposureRating <- function(RiskProfile, SubjectPremium, ExpectLossRatio, RiskCurve) {
+PropExposureRating <- function(RiskProfile, SubjectPremium, ExpectLossRatio, RiskCurve, CurveType = NULL) {
   if (!is.data.frame(RiskProfile)) stop("`RiskProfile` must be a data.frame", call. = FALSE)
   RiskProfile <- data.table::as.data.table(RiskProfile)
   if (!all(c("N", "SI", "Premium") %in% names(RiskProfile))) stop("`RiskProfile` must have 3 columns: `N`, `SI` and `Premium`")
   RiskProfile[, AvgSI := SI / N]
 
   curve_type <- attr(RiskCurve, "type", exact = TRUE)
+
+  if (is.null(curve_type) & is.null(CurveType)) {
+    # not created by RiskCurve function, need to mannually input CurveType
+    stop("`CurveType` must be input, with options being `Property` or `Casualty`", call. = FALSE)
+  }
+
   res <- structure(
     list(
       RiskProfile = RiskProfile,

@@ -186,3 +186,78 @@ transform_dual_axis <- function(y_left, y_right, force_zero = FALSE) {
 
   return(res)
 }
+
+#' Plot waterfall chart
+#'
+#' @export
+#' @examples
+#' df <- data.table(x = c("LR", "LPC", "Comm", "PC"), y = -c(.7, -.1, .5, 0))
+#' plot_waterfall(df, show_hline = T, show_label = T)
+#' plot_waterfall(df, balance_start = c("Premium" = 1), show_hline = T, show_label = T, labeller = num_auto)
+#' plot_waterfall(df, balance_start = c("Premium" = 1), calc_balance = c("Bal after LPC" = "LPC", "Treaty Balance" = "PC"), show_hline = T, color = c("green", "red", "grey"))
+
+plot_waterfall <- function(
+    DT,
+    balance_start = NULL, calc_balance = NULL, label_final = "Final Balance",
+    color = c("#9ae5de", "#efe8d1", "#acc8d4"),
+    x_var = NULL, y_var = NULL,
+    bar_width = .5, show_hline = FALSE, show_label = FALSE, labeller = NULL
+  ) {
+  dt <- data.table::as.data.table(DT)
+  dt_colnames <- colnames(dt)
+  # guess x and y var names
+  if (is.null(x_var) & is.character(dt[[1]])) x_var <- dt_colnames[1]
+  if (is.null(y_var) & is.numeric(dt[[2]])) y_var <- dt_colnames[2]
+  data.table::setnames(dt, old = c(x_var, y_var), new = c("x", "y"))
+  # prepare balance
+  dt[, `:=`(id = .I, type = data.table::fifelse(y >= 0, "increase", "decrease"))]
+
+  if (!is.null(balance_start)) {
+    dt <- rbind(dt, data.table::data.table(id = .5, x = names(balance_start), y = balance_start, type = "balance"))
+    dt <- dt[order(id)]
+  }
+  dt[, cum := cumsum(y)]
+
+  if (is.null(calc_balance)) calc_balance <- setNames(tail(dt[["x"]], 1L), label_final)
+
+  if (is.null(names(calc_balance))) names(calc_balance) <- paste0("Balance after ", calc_balance)
+  dt_add <- dt[x %in% calc_balance][, `:=`(id = id + .5, x = names(calc_balance), type = "balance")]
+  dt <- rbind(dt, dt_add)[order(id)]
+  # start and end
+  dt[,
+     `:=`(
+       xpos = .I,
+       ystart = data.table::fifelse(type == "balance", 0, data.table::shift(cum, fill = 0)),
+       yend = cum
+     )
+  ]
+
+  # plot spec
+  ## spec: fill
+  if (length(color) >= 3) fill_colors <- color[1:3]
+  if (length(color) < 3) stop("`color` must have 3 elements", call. = FALSE)
+  if (is.null(names(fill_colors))) names(fill_colors) <- c("increase", "decrease", "balance")
+
+  # plot
+  p <- ggplot2::ggplot(dt, ggplot2::aes(xpos))
+
+  p <- p + ggplot2::geom_rect(ggplot2::aes(fill = type, xmin = xpos - bar_width / 2, xmax = xpos + bar_width / 2, ymin = ystart, ymax = yend),
+                              color = "#7f7f7f") +
+    ggplot2::scale_x_discrete(limits = dt$x) +
+    ggplot2::scale_fill_manual(values = fill_colors) +
+    ggplot2::xlab(NULL) +
+    ggplot2::ylab(NULL) +
+    theme_op(legend_position = "none", x_text_angle = 45)
+
+  if (show_hline) {
+    dt2 <- dt[, .(x = xpos + bar_width / 2, xend = data.table::shift(xpos, -1L) -  bar_width / 2, y = cum)][!is.na(xend)]
+    p <- p + ggplot2::geom_segment(data = dt2, ggplot2::aes(x = x, xend = xend, y = y, yend = y), color = "#4a4a4a", linetype = "dotted")
+  }
+
+  if (show_label) {
+    if (is.null(labeller)) labeller <- function(x) x
+
+    p <- p + ggplot2::geom_text(ggplot2::aes(y = (ystart + yend) / 2, label = data.table::fifelse(type == "balance", labeller(cum), labeller(y))))
+  }
+  p
+}

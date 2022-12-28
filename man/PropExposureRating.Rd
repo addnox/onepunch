@@ -4,7 +4,13 @@
 \alias{PropExposureRating}
 \title{Create \code{S3} class for Property Exposure Rating (i.e. First Loss Scale method)}
 \usage{
-PropExposureRating(RiskProfile, SubjectPremium, ExpectLossRatio, RiskCurve)
+PropExposureRating(
+  RiskProfile,
+  SubjectPremium,
+  ExpectLossRatio,
+  RiskCurve,
+  CurveType = NULL
+)
 }
 \arguments{
 \item{RiskProfile}{A \code{data.frame} containing at least the following 3 columns: \code{N}, \code{SI} and \code{Premium}}
@@ -13,7 +19,7 @@ PropExposureRating(RiskProfile, SubjectPremium, ExpectLossRatio, RiskCurve)
 
 \item{ExpectLossRatio}{Numeric, loss ratio to convert \code{SubjectPremium} to \code{ExpectLoss}}
 
-\item{RiskCurve}{A \code{RiskCurve} object, created by \code{RiskCurve} function}
+\item{RiskCurve}{Created by \code{RiskCurve} function, or a risk curve function}
 }
 \description{
 Create \code{S3} class for Property Exposure Rating (i.e. First Loss Scale method)
