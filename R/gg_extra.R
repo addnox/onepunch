@@ -189,19 +189,31 @@ transform_dual_axis <- function(y_left, y_right, force_zero = FALSE) {
 
 #' Plot waterfall chart
 #'
+#' @param DT A `data.frame` with at least two columns, usually the 1st for labels and the 2nd for incremental values
+#' @param balance_start A named character vector with length 1.  The `value` will be the initial balance, and the `name` will be the label
+#' @param calc_balance A named character vector.  The `value`s will be the position (after which) to calculate on-going balance.  The `name`s will be the labels
+#' @param label_final The label for final balance
+#' @param color Colors to fill the rectangles, with the sequence for "increase", "decrease" and "balance"
+#' @param color_border Color for the rectangle border.  Use `NA` if no color is wanted
+#' @param xvar,yvar Column names for `x` (i.e. label) and `y` (i.e. value).  If `NULL`, then the 1st column of `DT` will be used as label (if it is of character type), and the 2nd as value (if it is of numeric type)
+#' @param bar_width Width of rectangles
+#' @param show_hline Show the link lines from the end of previous rectangle to the start of the next
+#' @param show_value Show values as rectangle labels
+#' @param labeller A function to format the value labels
+#' @param ... To be passed to `theme_op`
 #' @export
 #' @examples
 #' df <- data.table(x = c("LR", "LPC", "Comm", "PC"), y = -c(.7, -.1, .5, 0))
-#' plot_waterfall(df, show_hline = T, show_label = T)
-#' plot_waterfall(df, balance_start = c("Premium" = 1), show_hline = T, show_label = T, labeller = num_auto)
-#' plot_waterfall(df, balance_start = c("Premium" = 1), calc_balance = c("Bal after LPC" = "LPC", "Treaty Balance" = "PC"), show_hline = T, color = c("green", "red", "grey"))
+#' plot_waterfall(df, show_hline = T, show_value = T)
+#' plot_waterfall(df, balance_start = c("Premium" = 1), show_hline = T, show_value = T, labeller = num_auto)
+#' plot_waterfall(df, balance_start = c("Premium" = 1), calc_balance = c("Bal after LPC" = "LPC", "Treaty Balance" = "PC"), show_hline = T, color = c("green", "red", "grey"), x_text_angle = 45, show_axis_text = "x")
 
 plot_waterfall <- function(
     DT,
     balance_start = NULL, calc_balance = NULL, label_final = "Final Balance",
-    color = c("#9ae5de", "#efe8d1", "#acc8d4"),
+    color = c("#9ae5de", "#efe8d1", "#acc8d4"), color_border = "#7f7f7f",
     x_var = NULL, y_var = NULL,
-    bar_width = .5, show_hline = FALSE, show_label = FALSE, labeller = NULL
+    bar_width = .5, show_hline = FALSE, show_value = FALSE, labeller = NULL, ...
   ) {
   dt <- data.table::as.data.table(DT)
   dt_colnames <- colnames(dt)
@@ -242,19 +254,19 @@ plot_waterfall <- function(
   p <- ggplot2::ggplot(dt, ggplot2::aes(xpos))
 
   p <- p + ggplot2::geom_rect(ggplot2::aes(fill = type, xmin = xpos - bar_width / 2, xmax = xpos + bar_width / 2, ymin = ystart, ymax = yend),
-                              color = "#7f7f7f") +
+                              color = color_border) +
     ggplot2::scale_x_discrete(limits = dt$x) +
     ggplot2::scale_fill_manual(values = fill_colors) +
     ggplot2::xlab(NULL) +
     ggplot2::ylab(NULL) +
-    theme_op(legend_position = "none", x_text_angle = 45)
+    theme_op(legend_position = "none", ...)
 
   if (show_hline) {
     dt2 <- dt[, .(x = xpos + bar_width / 2, xend = data.table::shift(xpos, -1L) -  bar_width / 2, y = cum)][!is.na(xend)]
     p <- p + ggplot2::geom_segment(data = dt2, ggplot2::aes(x = x, xend = xend, y = y, yend = y), color = "#4a4a4a", linetype = "dotted")
   }
 
-  if (show_label) {
+  if (show_value) {
     if (is.null(labeller)) labeller <- function(x) x
 
     p <- p + ggplot2::geom_text(ggplot2::aes(y = (ystart + yend) / 2, label = data.table::fifelse(type == "balance", labeller(cum), labeller(y))))
