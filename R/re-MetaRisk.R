@@ -76,8 +76,3 @@ mr_eld_read <- function(file) {
 
   res
 }
-
-#' @export
-mr_build_script <- function(x, ...) {
-  UseMethod("mr_build_script")
-}

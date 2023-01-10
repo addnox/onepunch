@@ -299,3 +299,7 @@ tidy_lift_header <- function(DT, header_rows, long_cols = NULL, wide_cols = NULL
   )
   res
 }
+
+# tidy_table_from_spec <- function(DT, header_rows, spec, check = TRUE) {
+#
+# }

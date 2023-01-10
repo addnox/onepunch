@@ -34,3 +34,16 @@ stri_trunc <- function (x, width, side = c("right", "left", "center"), ellipsis 
 stri_squish <- function(x) {
   stringi::stri_trim_both(stringi::stri_replace_all_regex(x, "\\s+", " "))
 }
+
+#' Cross-join character vectors and paste
+#' @param ... One or more character vectors, as in `paste` function
+#' @param sep A character string to separate the terms
+#' @export
+#' @examples
+#' stri_cj(c("SI", "Prem"), c("Gross", "SP", "Net"), c("Actual", "AsIf"), sep = "..")
+
+stri_cj <- function(..., sep = "_") {
+  x <- data.table::CJ(..., sorted = FALSE)
+  res <- x[, do.call(paste, c(.SD, sep = sep))]
+  res
+}
