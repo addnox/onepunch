@@ -34,42 +34,33 @@ DataTester <- R6::R6Class(
       code <- substitute(code) ## borrow from test_that
       test_res <- eval(code, parent.frame())
 
-      if (is.logical(test_res) & length(test_res) == 1) {
-        if (test_res) {
-          cli::cli_alert_success(desc)
-        } else {
-          cli::cli_alert_danger(desc)
-        }
-      } else {
-        # data.frame case
-        if (is.null(test_name)) test_name <- paste0("test-", stringi::stri_pad_left(length(private$.results) + 1, width = 3, pad = "0"))
-        msg_test_result <- "all valid"
-        msg_color <- "blue"
-        n_invalid <- nrow(test_res)
-        if (n_invalid > 0) {
-          msg_test_result <- paste0(n_invalid, " invald rows")
-          msg_color <- "red"
-        }
-
-        # screen output
-        desc_label <- paste0("test that `", desc, "` ") |> stringi::stri_pad_right(100, ".")
-        cli::cat_line(desc_label, " ", msg_test_result, col = msg_color)
-
-        # pick columns
-        if (is.null(private$.cols_to_keep) & is.null(cols_keep)) {
-          cols_keep <- names(test_res)
-        } else {
-          cols_keep <- base::intersect(c(private$.cols_to_keep, cols_keep), names(test_res))
-        }
-
-        if (!is.null(cols_forward)) {
-          cols_forward <- base::intersect(cols_forward, cols_keep)
-          cols_keep <- unique(c(cols_forward, cols_keep))
-        }
-
-        # output to results (only DT results are recorded)
-        private$.results[[test_name]] <- list(name = test_name, desc = desc, data = test_res[, ..cols_keep])
+      if (is.null(test_name)) test_name <- paste0("test-", stringi::stri_pad_left(length(private$.results) + 1, width = 3, pad = "0"))
+      msg_test_result <- "all valid"
+      msg_color <- "blue"
+      n_invalid <- nrow(test_res)
+      if (n_invalid > 0) {
+        msg_test_result <- paste0(n_invalid, " invald rows")
+        msg_color <- "red"
       }
+
+      # screen output
+      desc_label <- paste0("test that `", desc, "` ") |> stringi::stri_pad_right(100, ".")
+      cli::cat_line(desc_label, " ", msg_test_result, col = msg_color)
+
+      # pick columns
+      if (is.null(private$.cols_to_keep) & is.null(cols_keep)) {
+        cols_keep <- names(test_res)
+      } else {
+        cols_keep <- base::intersect(c(private$.cols_to_keep, cols_keep), names(test_res))
+      }
+
+      if (!is.null(cols_forward)) {
+        cols_forward <- base::intersect(cols_forward, cols_keep)
+        cols_keep <- unique(c(cols_forward, cols_keep))
+      }
+
+      # output to results (only DT results are recorded)
+      private$.results[[test_name]] <- list(name = test_name, desc = desc, data = test_res[, ..cols_keep])
 
       invisible(self)
     },
@@ -96,7 +87,8 @@ DataTester <- R6::R6Class(
     #' @description
     #' Output test summary and invalid datasets to Excel
     #' @param file File path for excel output
-    write_to_excel = function(file) {
+    #' @param headerStyle Not implemented yet
+    write_to_excel = function(file, headerStyle = FALSE) {
       toc <- self$summary()
 
       failed_tests <- private$.results |>
@@ -105,25 +97,30 @@ DataTester <- R6::R6Class(
 
       failed_tests <- failed_tests[toc$Sheet]
 
-      hs <- openxlsx::createStyle(fontColour = "#ffffff", fgFill = "#4F80BD",
-                                  halign = "center", valign = "center", textDecoration = "Bold",
-                                  border = "TopBottomLeftRight")
+      if (headerStyle == FALSE) {
+        hs <- NULL
+      } else {
+        hs <- openxlsx::createStyle(fontColour = "#ffffff", fgFill = "#4F80BD",
+                                    halign = "center", valign = "center", textDecoration = "Bold",
+                                    border = "TopBottomLeftRight")
+      }
+
 
       sheets <- c(list(TOC = toc), failed_tests)
       names_sheets <- names(sheets)
 
-      wb <- openxlsx::createWorkbook()
+      wb <- openxlsx2::wb_workbook()
 
       for (ii in seq_along(sheets)) {
         ws_data <- sheets[[ii]]
         ws_name <- names_sheets[[ii]]
 
-        openxlsx::addWorksheet(wb, sheet = ws_name)
-        openxlsx::writeData(wb, ws_name, ws_data, headerStyle = hs)
-        openxlsx::setColWidths(wb, sheet = ws_name, cols = seq_along(ws_data), widths = "auto")
+        wb <- openxlsx2::wb_add_worksheet(wb, sheet = ws_name)
+        wb <- openxlsx2::wb_add_data(wb, ws_name, ws_data)
+        #openxlsx::setColWidths(wb, sheet = ws_name, cols = seq_along(ws_data), widths = "auto")
       }
 
-      openxlsx::saveWorkbook(wb, file = file, overwrite = TRUE)
+      openxlsx2::wb_save(wb, path = file, overwrite = TRUE)
       invisible(self)
     },
     #' @description
@@ -154,3 +151,21 @@ DataTester <- R6::R6Class(
     .cols_to_keep = c()
   )
 )
+
+#' @export
+cli_check_that <- function(code, desc) {
+  test_res <- eval(code, parent.frame())
+
+  if (is.logical(test_res) & length(test_res) == 1) {
+    if (test_res) {
+      cli::cli_alert_success(desc)
+    } else {
+      cli::cli_alert_danger(desc)
+    }
+  } else {
+    cli::cli_abort("`code` must yield a logical output after evaluation.")
+  }
+
+  invisible(NULL)
+}
+

@@ -40,7 +40,8 @@ use_common_dir <- function(wd = NULL, flavor = c("concise", "gc"), create_projec
     "scripts", # where to put R scripts, usually with interactive use
     "src",     # where to put R functions for later sourcing
     "tests",
-    "deliverable" # move deliverable out of data/ folder
+    "deliverable", # move deliverable out of data/ folder
+    "deliverable/to_be_edited"
   )
 
   dir_gc <- c(

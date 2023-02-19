@@ -107,13 +107,15 @@ Summarise the results for all tests
 \subsection{Method \code{write_to_excel()}}{
 Output test summary and invalid datasets to Excel
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataTester$write_to_excel(file)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{DataTester$write_to_excel(file, headerStyle = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{file}}{File path for excel output}
+
+\item{\code{headerStyle}}{Not implemented yet}
 }
 \if{html}{\out{</div>}}
 }
