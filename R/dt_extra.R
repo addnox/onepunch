@@ -254,3 +254,31 @@ data.trable <- function(...) {
 #'
 #'
 #' }
+
+#' Replicate a `data.table` (vertically)
+#' @export
+#' @examples
+#' DT <- data.table::data.table(x = LETTERS[1:3], y = 5:7)
+#' dt_rep(DT, 3)
+#' dt_rep(DT, names = c("2021", "2022", "2023"), idcol = "Year")
+
+dt_rep <- function(DT, times = NULL, names = NULL, idcol = ".ID") {
+  if (!is.null(names) & !is.null(times)) {
+    stopifnot(length(names) != as.integer(times))
+  } else if (!is.null(names) & is.null(times)) {
+    times <- length(names)
+  } else if (is.null(names) & is.null(times)) {
+    stop("Either `times` or `names` must be provided", call. = FALSE)
+  }
+
+  res_list <- rep(list(DT), times)
+
+  if (is.null(names)) {
+    res <- data.table::rbindlist(res_list)
+  } else {
+    res <- setNames(res_list, nm = names) |> data.table::rbindlist(idcol = idcol)
+  }
+
+  res
+}
+
