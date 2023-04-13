@@ -152,9 +152,17 @@ DataTester <- R6::R6Class(
   )
 )
 
+#' In-line checker
+#'
+#' @examples
+#' cli_check_that(nrow(mtcars) == 32)
+#' cli_check_that(nrow(mtcars) == 31, "# of rows for `mtcars` is 31")
+#'
 #' @export
-cli_check_that <- function(code, desc) {
+cli_check_that <- function(code, desc = NULL) {
   test_res <- eval(code, parent.frame())
+
+  if (is.null(desc)) desc <- substitute(code)
 
   if (is.logical(test_res) & length(test_res) == 1) {
     if (test_res) {

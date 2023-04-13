@@ -2,15 +2,12 @@
 % Please edit documentation in R/dt_extra.R
 \name{dt_rep}
 \alias{dt_rep}
-\title{#' Distribute (i.e. dis-aggregate) x using the pattern of detailed data \code{d}}
+\title{Replicate a \code{data.table} (vertically)}
 \usage{
 dt_rep(DT, times = NULL, names = NULL, idcol = ".ID")
 }
 \description{
-
-}
-\details{
-
+Replicate a \code{data.table} (vertically)
 }
 \examples{
 DT <- data.table::data.table(x = LETTERS[1:3], y = 5:7)

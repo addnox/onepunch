@@ -243,18 +243,6 @@ data.trable <- function(...) {
   data.table::as.data.table(res_list)
 }
 
-#'
-#' #' Distribute (i.e. dis-aggregate) x using the pattern of detailed data `d`
-#'
-#' dt_distribute <- function(x, d, by) {
-#'   x <- data.table::as.data.table(x)
-#'   d <- data.table::as.data.table(d)
-#'   if (!all(by %in% colnames(x))) stop("Not all variables in `by` are in x", call. = FALSE)
-#'   if (!all(by %in% colnames(d))) stop("Not all variables in `by` are in d", call. = FALSE)
-#'
-#'
-#' }
-
 #' Replicate a `data.table` (vertically)
 #' @export
 #' @examples

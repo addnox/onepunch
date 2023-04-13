@@ -65,7 +65,7 @@ gt_save <- function(gt, file, vwidth = 1000, vheight = 800, expand = 10, trim = 
     file <- file.path(file_path, file)
   }
 
-  suppressMessages(gt::gtsave(gt, file, vwidth = vwidth, vheight = vheight, expand = expand, ...))
+  gt::gtsave(gt, file, vwidth = vwidth, vheight = vheight, expand = expand, ...)
 
   if (trim & requireNamespace("magick", quietly = TRUE)) {
     img_rework <- magick::image_read(file)
