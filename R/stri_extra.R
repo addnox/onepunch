@@ -47,3 +47,33 @@ stri_cj <- function(..., sep = "_") {
   res <- x[, do.call(paste, c(.SD, sep = sep))]
   res
 }
+
+#' Extract Chinese characters from strings
+#' @export
+#' @examples
+#' x <- c("Sunflower Insurance (葵花保险) （新型）", "Sugarbeet Insurance（甜菜保险）", "Corn Full Cost Insurance (Irrigated Land)（水地玉米完全成本保险）", "Corn Full Cost Insurance (Dry Land)（旱地玉米完全成本保险）")
+#' stri_extract_Chinese(x)
+#' stri_extract_Chinese(x, simplify = FALSE)
+
+stri_extract_Chinese <- function(x, sep = "_", simplify = TRUE) {
+  pattern <- "(\\p{Han}){1,}"
+  x1 <- stringi::stri_extract_all_regex(x, pattern)
+  if (simplify == TRUE) {
+    res <- stringi::stri_c_list(x1, sep = sep)
+  } else {
+    res <- x1
+  }
+
+  res
+}
+
+#' Approximate string mapping
+#' @export
+#' @examples
+#' x1 <- c("水稻种植保险\\nRice Insurance", "水地玉米种植保险\\nIrrigated Land Corn Insurance", "旱地玉米种植保险\\nDryland Corn Insurance", "水地小麦种植保险\\nIrrigated Land Wheat Insurance ", "旱地小麦种植保险\\nDryland Wheat Insurance", "水地马铃薯保险\\nIrrigated Potato Insurance ", "旱地马铃薯保险\\nDryland Potato Insurance", "油菜种植保险\\nRape Insurance")
+#' x2 <- c("Irrigated Land Corn Insurance (水地玉米种植保险)", "Rice Insurance (水稻种植保险)", "Irrigated Land Wheat Insurance（水地小麦种植保险）", "Rape Insurance （油菜种植保险)", "Dryland Potato Insurance (旱地马铃薯保险)", "Dryland Wheat Insurance（旱地小麦种植保险）", "Irrigated Potato Insurance (水地马铃薯保险)", "Dryland Corn Insurance (旱地玉米种植保险)")
+#' data.frame(Orig = x1, Mapped = stri_amap(x1, x2))
+stri_amap <- function(x, y) {
+  res <- y[stringdist::amatch(x, y, maxDist = Inf)]
+  res
+}
