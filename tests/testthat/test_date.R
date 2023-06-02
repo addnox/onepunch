@@ -17,3 +17,7 @@ test_that("date_parse_quarter", {
   expect_equal(date_parse_quarter(d), as.Date(c("2021-09-30", "2021-12-31", "2021-03-31", NA, NA, NA)))
   expect_equal(date_parse_quarter(d, period_end = FALSE), as.Date(c("2021-07-01", "2021-10-01", "2021-01-01", NA, NA, NA)))
 })
+
+test_that("date_parse_excel", {
+  expect_equal(date_parse_excel(c(NA, 43831, 43555)), lubridate::ymd(NA, 20200101, 20190331))
+})

@@ -77,3 +77,29 @@ stri_amap <- function(x, y) {
   res <- y[stringdist::amatch(x, y, maxDist = Inf)]
   res
 }
+
+#' Convert full-width characters into half-width
+#' @export
+#' @examples
+#' x <- c("(Irrigated Land Corn InsuranceABC,.?!) （水地玉米种植保险ＡＢＣ，。？！）", "Rice Insurance (水稻种植保险)")
+#' stri_full_to_half(x)
+
+stri_full_to_half <- function(x) {
+
+  stri_full_to_half_single <- function(x1) {
+    # 全角空格为12288，半角空格为32
+    # 其他字符半角(33-126)与全角(65281-65374)的对应关系是：均相差65248
+    int1 <- utf8ToInt(x1)
+    int1_half <- data.table::fcase(
+      int1 > 65280 & int1 < 65375, int1 - 65248L,
+      int1 == 12288L,               32L,
+      int1 > 0,                    int1
+    )
+
+    res <- intToUtf8(int1_half)
+    res
+  }
+
+  vapply(x, stri_full_to_half_single, character(1L), USE.NAMES = FALSE)
+}
+

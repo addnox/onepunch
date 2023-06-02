@@ -57,3 +57,13 @@ test_that("stri_amap works propertly", {
   res1 <- c("Rice Insurance (水稻种植保险)", "Irrigated Land Corn Insurance (水地玉米种植保险)", "Dryland Corn Insurance (旱地玉米种植保险)", "Irrigated Land Wheat Insurance（水地小麦种植保险）", "Dryland Wheat Insurance（旱地小麦种植保险）", "Irrigated Potato Insurance (水地马铃薯保险)", "Dryland Potato Insurance (旱地马铃薯保险)", "Rape Insurance （油菜种植保险)")
   expect_equal(stri_amap(x1, x2), res1)
 })
+
+test_that("full to half char", {
+  x1 <- "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ０１２３４５６７８９０［］（）"
+  res1 <- "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890[]()"
+  expect_equal(stri_full_to_half(x1), res1)
+
+  x2 <- unlist(strsplit(x1, ""))
+  res2 <- unlist(strsplit(res1, ""))
+  expect_equal(stri_full_to_half(x2), res2)
+})

@@ -47,7 +47,7 @@ date_duration <- function(d1, d2, unit = c("day", "month", "quarter", "year"), r
 #' date_parse_quarter(x_quarter, period_end = FALSE)
 date_parse_excel <- function(x, ...) {
   x1 <- as.integer(x)
-  res <- openxlsx::convertToDate(x1, ...)
+  res <- openxlsx2::convert_date(x1, ...)
   res
 }
 
