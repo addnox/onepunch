@@ -116,7 +116,7 @@ DataTester <- R6::R6Class(
         ws_name <- names_sheets[[ii]]
 
         wb <- openxlsx2::wb_add_worksheet(wb, sheet = ws_name)
-        wb <- openxlsx2::wb_add_data(wb, ws_name, ws_data)
+        wb <- openxlsx2::wb_add_data(wb, ws_name, ws_data, na.strings = NULL)
         #openxlsx::setColWidths(wb, sheet = ws_name, cols = seq_along(ws_data), widths = "auto")
       }
 
