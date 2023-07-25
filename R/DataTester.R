@@ -97,15 +97,6 @@ DataTester <- R6::R6Class(
 
       failed_tests <- failed_tests[toc$Sheet]
 
-      if (headerStyle == FALSE) {
-        hs <- NULL
-      } else {
-        hs <- openxlsx::createStyle(fontColour = "#ffffff", fgFill = "#4F80BD",
-                                    halign = "center", valign = "center", textDecoration = "Bold",
-                                    border = "TopBottomLeftRight")
-      }
-
-
       sheets <- c(list(TOC = toc), failed_tests)
       names_sheets <- names(sheets)
 
@@ -117,7 +108,6 @@ DataTester <- R6::R6Class(
 
         wb <- openxlsx2::wb_add_worksheet(wb, sheet = ws_name)
         wb <- openxlsx2::wb_add_data(wb, ws_name, ws_data, na.strings = NULL)
-        #openxlsx::setColWidths(wb, sheet = ws_name, cols = seq_along(ws_data), widths = "auto")
       }
 
       openxlsx2::wb_save(wb, path = file, overwrite = TRUE)

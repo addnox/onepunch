@@ -1,12 +1,8 @@
-
-#' Split data.table into list
-#'
-#' tidy split functions return a list of split data blocks
+#' Split data into list of `data.table`s horizontally or vertically
 #'
 #' @param x A data.frame
 #' @param by Numeric vector indicating position
 #' @param na.rm When TRUE, those rows with all `cols` being `NA` will be deleted before splitting
-#' @export
 #' @examples
 #' DT1 <- data.table(ID1 = c(NA, "A", "A", NA, NA, "B"), ID2 = c(rep("1", 3), NA, "2", "2"), X1 = NA, X2 = c(NA, 1:2, NA, NA, 3), X3 = c(rep(NA, 5), .1))
 #' tidy_hsplit(DT1)
@@ -15,7 +11,27 @@
 #'
 #' DT2 <- data.table(ID1 = c(1, NA, NA, 2, NA), ID2 = c("A", NA, "B", "C", NA), X1 = 1:5, X2 = LETTERS[1:5])
 #' tidy_hsplit(DT2, by = 1:2)
+#'
+#' @export
+tidy_hsplit <- function(x, by = NULL, na.rm = FALSE, keep.by = TRUE, factor.by = FALSE) {
+  res <- tidy_hsplit_(x, by = by, na.rm = na.rm, keep.by = keep.by, factor.by = factor.by)
+  res <- lapply(res, function(x) {data.table::setattr(x, "row.names", seq_len(nrow(x))); x})
+  res
+}
 
+#' @rdname tidy_hsplit
+#' @export
+tidy_vsplit <- function(x, by = NULL, na.rm = TRUE, keep.by = TRUE, factor.by = FALSE) {
+  stopifnot(is.integer(by) | is.null(by) | factor.by)
+  x <- data.table::as.data.table(x)
+  x1 <- data.table::transpose(x)
+  rownames(x1) <- names(x)
+
+  res_t <- tidy_hsplit_(x1, by = by, na.rm = na.rm, keep.by = keep.by, factor.by = factor.by)
+  res <- lapply(res_t, function(x) data.table::setnames(data.table::transpose(x), rownames(x)))
+  res <- lapply(res, function(x) {data.table::setattr(x, "row.names", seq_len(nrow(x))); x})
+  res
+}
 
 #' @keywords internal
 tidy_hsplit_ <- function(x, by = NULL, na.rm = TRUE, keep.by = TRUE, fill.by = TRUE, factor.by = FALSE) {
@@ -63,27 +79,5 @@ tidy_hsplit_ <- function(x, by = NULL, na.rm = TRUE, keep.by = TRUE, fill.by = T
   ## keep split-by cols
   if (!keep.by & !is.null(by)) res <- lapply(res, function(DT) DT[, (by) := NULL])
 
-  res
-}
-
-#' Split data into list of `data.table`s horizontally or vertically
-#' @export
-tidy_hsplit <- function(x, by = NULL, na.rm = FALSE, keep.by = TRUE, factor.by = FALSE) {
-  res <- tidy_hsplit_(x, by = by, na.rm = na.rm, keep.by = keep.by, factor.by = factor.by)
-  res <- lapply(res, function(x) {data.table::setattr(x, "row.names", seq_len(nrow(x))); x})
-  res
-}
-
-#' @rdname tidy_hsplit
-#' @export
-tidy_vsplit <- function(x, by = NULL, na.rm = TRUE, keep.by = TRUE, factor.by = FALSE) {
-  stopifnot(is.integer(by) | is.null(by) | factor.by)
-  x <- data.table::as.data.table(x)
-  x1 <- data.table::transpose(x)
-  rownames(x1) <- names(x)
-
-  res_t <- tidy_hsplit_(x1, by = by, na.rm = na.rm, keep.by = keep.by, factor.by = factor.by)
-  res <- lapply(res_t, function(x) data.table::setnames(data.table::transpose(x), rownames(x)))
-  res <- lapply(res, function(x) {data.table::setattr(x, "row.names", seq_len(nrow(x))); x})
   res
 }

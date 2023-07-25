@@ -30,7 +30,7 @@ readxl_raw <- function(wb, ws = NULL, range = NULL, rows = NULL, cols = NULL, co
 
   if (alpha_type_cols) {# v1 to A, v3 to C and etc.
     colnum <- seq_len(ncol(res))
-    newcolnm <- stringi::stri_sub(openxlsx::getCellRefs(data.frame(1, colnum)), 1L, -2L)
+    newcolnm <- stringi::stri_sub(openxlsx2::get_cell_refs(data.frame(1, colnum)), 1L, -2L)
     data.table::setnames(res, newcolnm)
   }
 
@@ -46,7 +46,7 @@ readxl_raw <- function(wb, ws = NULL, range = NULL, rows = NULL, cols = NULL, co
 #' Read named ranges in workbook
 #' @export
 readxl_named_range <- function(wb, ws = NULL) {
-  x <- openxlsx::getNamedRegions(wb)
+  x <- openxlsx2::wb_get_named_regions(wb)
 
   raw <- data.table::data.table(
     Sheet = attr(x, "sheet"),
