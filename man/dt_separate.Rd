@@ -30,7 +30,7 @@ dt_separate(
 By-ref equivalent of \code{tidyr::separate}
 }
 \examples{
-df <- data.table(x = c("A_B_C", "D_E_F"))
+df <- data.table(x = c("A_B_C", "D_E_F"), y = 1:2, z = 3:4)
 dt_separate(copy(df), col = "x")[]
 dt_separate(copy(df), col = "x", into = paste0("v", 1:2))[]
 dt_separate(copy(df), col = "x", into = paste0("v", 1:2), extra = "merge")[]

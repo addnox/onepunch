@@ -26,6 +26,7 @@
 
 #' @export
 cnames <- function(DT, cols = NULL) {
+  cli::cli_warn("`cnames` was deprecated.\nPlease use `collapse::get_vars(, return = \"names\") instead.")
   if (missing(cols)) return(names(DT))
   cols_q <- substitute(cols)
   res <- cnames_q(DT, cols_q)

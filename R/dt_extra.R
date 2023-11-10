@@ -35,7 +35,7 @@ dt_nest <- function(DT, by, key_name = "data", keep = FALSE) {
 #'
 #' @export
 #' @examples
-#' df <- data.table(x = c("A_B_C", "D_E_F"))
+#' df <- data.table(x = c("A_B_C", "D_E_F"), y = 1:2, z = 3:4)
 #' dt_separate(copy(df), col = "x")[]
 #' dt_separate(copy(df), col = "x", into = paste0("v", 1:2))[]
 #' dt_separate(copy(df), col = "x", into = paste0("v", 1:2), extra = "merge")[]
@@ -45,6 +45,7 @@ dt_nest <- function(DT, by, key_name = "data", keep = FALSE) {
 dt_separate <- function(dt, col, into = NULL, sep = "[^[:alnum:]]+", remove = TRUE, extra = c("complete", "merge", "drop")) {
   dt <- data.table::setDT(dt)
   extra <- match.arg(extra)
+  idx_col <- which(names(dt) == col)
 
   data_split <- data.table::as.data.table(data.table::tstrsplit(dt[[col]], split = sep))
   n_split <- ncol(data_split)
@@ -71,8 +72,10 @@ dt_separate <- function(dt, col, into = NULL, sep = "[^[:alnum:]]+", remove = TR
     }
   }
 
-  dt[, colnames(data_split) := data_split]
+  dt[, names(data_split) := data_split]
 
+  cols_seq <- c(names(dt)[1:idx_col], names(data_split))
+  data.table::setcolorder(dt, cols_seq)
   if (remove & !(col %in% into)) dt[, (col) := NULL]
 
   dt
@@ -123,6 +126,7 @@ dt_unite <- function(DT, cols = NULL, into, sep = "_", remove = TRUE, na.rm = TR
 #' dt_setcols(copy(x), !is.character, function(x) x * 100)[]
 #' dt_setcols(copy(x), .(2:3, "B"), function(x) x * 100)[]
 dt_setcols <- function(DT, cols, FUN, ...) {
+  cli::cli_warn("`dt_setcols` was deprecated.\nPlease use `collapse::ftransformv` instead.")
   data.table::setDT(DT)
 
   cols_final <- cnames_q(DT, substitute(cols))
@@ -143,6 +147,7 @@ dt_setcols <- function(DT, cols, FUN, ...) {
 #' dt_set(copy(DT), A = mpg, B = A * 2, C = X / 3)
 #' dt_set(copy(DT), A = mpg, B = mean(max(A * 2)), A = NULL, mpg = NULL)
 dt_set <- function(DT, ...) {
+  cli::cli_warn("`dt_set` was deprecated.\nPlease use `collapse::ftransform` instead.")
   exprs <- as.list(substitute(...())) ## undocumented feature of substitute and ...
   nm <- names(exprs)
 

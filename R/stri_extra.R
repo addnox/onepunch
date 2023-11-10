@@ -103,3 +103,13 @@ stri_full_to_half <- function(x) {
   vapply(x, stri_full_to_half_single, character(1L), USE.NAMES = FALSE)
 }
 
+#' Wrap words into nicely formatted paragraphs
+#'
+#' @export
+stri_wrap0 <- function (string, width = 80, indent = 0, exdent = 0, whitespace_only = TRUE) {
+  if (width <= 0) {
+    width <- 1
+  }
+  out <- stringi::stri_wrap(string, width = width, indent = indent, exdent = exdent, whitespace_only = whitespace_only, simplify = FALSE)
+  vapply(out, paste, character(1), collapse = "\n")
+}

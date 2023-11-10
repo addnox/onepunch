@@ -126,11 +126,11 @@ plot_save <- gg_save
 #' palette_op() |> plot()
 #' palette_op("economist", c(1, 3, 5, 6)) |> plot()
 
-palette_op <- function(name = c("gc", "economist"), idx = NULL) {
+palette_op <- function(name = c("economist", "gc"), idx = NULL) {
   name <- match.arg(name)
   paletteList <- list(
-    "gc" = c("#002e5c", "#1490ad", "#046f80", "#6dc0c4", "#00977d", "#009e3c", "#76949d", "#8ccbb8", "#768278", "#a6b29f"),
     "economist" = c("#01a2d9", "#014d64", "#6794a7", "#7ad2f6", "#00887d", "#76c0c1", "#7c260b", "#ee8f71", "#a18376", "#ecc265", "#f15a40")
+    # "gc" = c("#002e5c", "#1490ad", "#046f80", "#6dc0c4", "#00977d", "#009e3c", "#76949d", "#8ccbb8", "#768278", "#a6b29f"),
   )
 
   paletteChosen <- paletteList[[name]]

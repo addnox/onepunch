@@ -150,7 +150,7 @@ xlrange <- function(range = NULL, rows = NULL, cols = NULL, ws = NULL) {
   } else {
     rng_byrow <- cellranger::cell_rows(rows)
     rng_bycol <- cellranger::cell_cols(cols)
-    res <- do.call(cellranger::cell_limits, Map(fcoalesce, rng_byrow, rng_bycol))
+    res <- do.call(cellranger::cell_limits, Map(data.table::fcoalesce, rng_byrow, rng_bycol))
   }
 
   if (!is.null(ws)) res$sheet <- ws

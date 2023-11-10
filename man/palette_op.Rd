@@ -4,7 +4,7 @@
 \alias{palette_op}
 \title{A selection of color palettes}
 \usage{
-palette_op(name = c("gc", "economist"), idx = NULL)
+palette_op(name = c("economist", "gc"), idx = NULL)
 }
 \description{
 A selection of color palettes

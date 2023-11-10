@@ -86,3 +86,16 @@ doughnut <- function (x, labels = names(x), edges = 200, outer.radius = 0.8,
   invisible(NULL)
 }
 
+#' Decide whether to use light color or dark color according to color palette in `x`
+#'
+#' Usually `x` is the background color in plot, and the output is the font color
+#' @export
+
+color_contrast <- function(x, col_light = "#ffffff", col_dark = "#000000") {
+  col_rgb <- col2rgb(x) / 255
+  col_mat <- apply(col_rgb, 2, function(x) ifelse(x <= 0.04045, x / 12.92, ((x + 0.055) / 1.055) ^ 2.4))
+  L  <- 0.2126 * col_mat[1, ] + 0.7152 * col_mat[2, ] + 0.0722 * col_mat[3, ]
+  res <- ifelse(L > 0.179, col_dark, col_light)
+  res
+}
+
