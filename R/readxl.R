@@ -1,15 +1,15 @@
 #' DT version of read_excel
 #'
 #' @export
-readxl <- function(wb, ws = NULL, range = NULL, rows = NULL, cols = NULL, col_names = TRUE, col_types = NULL, ...) {
-  res <- readxl_raw(wb, ws, range, rows, cols, col_names, col_types, ...)
+readxl <- function(wb, ws = NULL, rows = NULL, cols = NULL, range = NULL, col_names = TRUE, col_types = NULL, ...) {
+  res <- readxl_raw(wb, ws, rows, cols, range, col_names, col_types, ...)
   res
 }
 
 #' Read entire Excel sheet from cell `A1`
 #'
 #' @export
-readxl_raw <- function(wb, ws = NULL, range = NULL, rows = NULL, cols = NULL, col_names = FALSE, col_types = "text", alpha_type_cols = FALSE, ...) {
+readxl_raw <- function(wb, ws = NULL, rows = NULL, cols = NULL, range = NULL, col_names = FALSE, col_types = "text", alpha_type_cols = FALSE, ...) {
   if (is.null(range) & is.null(rows) & is.null(cols)) range <- readxl::cell_limits(c(1L, 1L))
   if (is.null(ws)) ws <- 1L
 
@@ -38,7 +38,7 @@ readxl_raw <- function(wb, ws = NULL, range = NULL, rows = NULL, cols = NULL, co
   ws_name <- ws
   if (is.integer(ws)) ws_name <- readxl::excel_sheets(wb)[ws]
 
-  data.table::setattr(res, "meta", list(workbook = wb_name, worksheet = ws_name))
+  # data.table::setattr(res, "meta", list(workbook = wb_name, worksheet = ws_name))
 
   res
 }
@@ -99,7 +99,7 @@ readxl_list <- function(wb, ws = NULL, range, names_id = 1L) {
 
   if (n_cols != 2) stop("Number of columns needs to be 2", call. = FALSE)
 
-  dt <- readxl_raw(wb, ws, xlrange(range), col_names = c("V1", "V2"))
+  dt <- readxl_raw(wb, ws, range = xlrange(range), col_names = c("V1", "V2"))
   data.table::setDT(dt)
 
   res <- as.list(data.table::transpose(dt, make.names = "V1"))
@@ -115,7 +115,7 @@ readxl_vector <- function(wb, ws = NULL, range, data_type = c("text", "date", "n
   dim_rng <- dim(rng)
   if (!any(dim_rng == 1)) stop("Range must be 1-dimension, i.e. either one row or one column.")
 
-  dt <- readxl_raw(wb, ws, rng)
+  dt <- readxl_raw(wb, ws, range = rng)
 
   if (all(dim(dt) == 0)) {
     res <- character(0L)

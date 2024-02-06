@@ -173,14 +173,15 @@ dt_set <- function(DT, ...) {
 #' dt_patch(dt1, dt2, by = c("ID1", "ID2"), vars = c("v1"))
 #' dt_patch(dt1, dt2, by = c("ID1", "ID2"), vars = c("v1", "v2"))
 
-dt_patch <- function(x, y, by, vars, ties = c("y", "x")) {
+dt_patch <- function(x, y, by, vars = NULL, ties = c("y", "x")) {
   x <- data.table::as.data.table(x)
   y <- data.table::as.data.table(y)
   ties <- match.arg(ties)
+  if (is.null(vars)) vars <- base::setdiff(names(y), by)
   if (!all(by %in% colnames(x))) stop("Not all variables in `by` are in x", call. = FALSE)
   if (!all(by %in% colnames(y))) stop("Not all variables in `by` are in y", call. = FALSE)
   if (!all(vars %in% colnames(x))) stop("Not all variables in `vars` are in x", call. = FALSE)
-  if (!all(vars %in% colnames(x))) stop("Not all variables in `vars` are in y", call. = FALSE)
+  if (!all(vars %in% colnames(y))) stop("Not all variables in `vars` are in y", call. = FALSE)
   if (anyDuplicated(y, by = by)) stop("Variables in `by` cannot uniquely defined data `y`", call. = FALSE)
 
   ## Joining

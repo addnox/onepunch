@@ -12,5 +12,7 @@ In-line checker
 \examples{
 cli_check_that(nrow(mtcars) == 32)
 cli_check_that(nrow(mtcars) == 31, "# of rows for `mtcars` is 31")
+cli_check_that(all.equal(data.frame(A = 1:3), data.frame(A = 3:1)))
+cli_check_that(all.equal(data.frame(A = 1:3), data.frame(A = 1:3)))
 
 }

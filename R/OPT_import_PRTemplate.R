@@ -6,6 +6,7 @@
 #' @param Projection Name for Projection sheet
 #' @param Large Name for LargeLossList sheet
 #' @param Event Name for EventLossList sheet
+#' @rdname import_PRTemplate
 #' @export
 #' @examplesIf FALSE
 #' import_PRTemplate_Dev(wb, "Property", "Loss Ratios")
@@ -24,12 +25,19 @@ import_PRTemplate_Dev <- function(wb, LOB, LRSummary, Projection = LOB, Large = 
   DT_Projection <- raw_Projection[, .(LOB, UY, ActualPrem, ActualPaid, ActualIncurred)] |>
     data.table::setkeyv(c("LOB", "UY"))
 
-  DT_Large <- import_PRTemplate_LargeLossSummary(wb, Large)[LOB %in% .lobs, .(LOB, UY, ActualLarge)] |>
-    data.table::setkeyv(c("LOB", "UY"))
+  if (is.null(Large)) {
+    DT_Large <- DT_LRSummary[, .(LOB, UY, ActualLarge = 0)]
+  } else {
+    DT_Large <- import_PRTemplate_LargeLossSummary(wb, Large)[LOB %in% .lobs, .(LOB, UY, ActualLarge)] |>
+      data.table::setkeyv(c("LOB", "UY"))
+  }
 
-  DT_Event <- import_PRTemplate_EventLossSummary(wb, Event)[LOB %in% .lobs, .(LOB, UY, ActualEvent)] |>
-    # rbind(data.table::data.table(UY = "Projected"), fill = TRUE) |>
-    data.table::setkeyv(c("LOB", "UY"))
+  if (is.null(Event)) {
+    DT_Event <- DT_LRSummary[, .(LOB, UY, ActualEvent = 0)]
+  } else {
+    DT_Event <- import_PRTemplate_EventLossSummary(wb, Event)[LOB %in% .lobs, .(LOB, UY, ActualEvent)] |>
+      data.table::setkeyv(c("LOB", "UY"))
+  }
 
   res <- DT_Projection[DT_Large][DT_Event][DT_LRSummary]
   data.table::setcolorder(res, c("LOB", "UY", "ActualPrem", "ActualPaid", "ActualIncurred", "ActualLarge", "ActualEvent", "UltPrem", "UltIncurred", "UltLarge", "UltEvent"))
@@ -38,6 +46,7 @@ import_PRTemplate_Dev <- function(wb, LOB, LRSummary, Projection = LOB, Large = 
   res[]
 }
 
+#' @rdname import_PRTemplate
 #' @export
 import_PRTemplate_Projection <- function(wb, ws) {
   DT_raw <- readxl_raw(wb, ws, rows = c(8, NA), cols = "B:V")
@@ -60,6 +69,7 @@ import_PRTemplate_Projection <- function(wb, ws) {
   res[]
 }
 
+#' @rdname import_PRTemplate
 #' @export
 import_PRTemplate_LRSummary <- function(wb, ws) {
   DT_raw <- readxl_raw(wb, ws, rows = c(8, NA), cols = "B:M")
@@ -80,6 +90,7 @@ import_PRTemplate_LRSummary <- function(wb, ws) {
   res[]
 }
 
+#' @rdname import_PRTemplate
 #' @export
 import_PRTemplate_EventLossSummary <- function(wb, ws = "CAT") {
   DT_raw <- readxl_raw(wb, ws, rows = c(8, NA), cols = "B:I")
@@ -97,6 +108,7 @@ import_PRTemplate_EventLossSummary <- function(wb, ws = "CAT") {
   res[]
 }
 
+#' @rdname import_PRTemplate
 #' @export
 import_PRTemplate_LargeLossSummary <- function(wb, ws = "Large") {
   DT_raw <- readxl_raw(wb, ws, rows = c(8, NA), cols = "B:I")
@@ -115,6 +127,7 @@ import_PRTemplate_LargeLossSummary <- function(wb, ws = "Large") {
   res[]
 }
 
+#' @rdname import_PRTemplate
 #' @export
 import_PRTemplate_Term <- function(wb, ws) {
   terms_Structure <- readxl(wb, ws, range = "B3:H7")[, .SD[, -2], .SDcols = !patterns("^V\\d+$")] |>
@@ -146,6 +159,7 @@ import_PRTemplate_Term <- function(wb, ws) {
   ) |> data.table::setcolorder(c("Lbound", "Ubound", "LPC"))
 
   terms_SS <- readxl(wb, ws, rows = c(5, NA), cols = "L:N", col_names = c("LowerLR", "UpperLR", "Comm")) |> na.omit()
+  terms_SS[UpperLR > 10, UpperLR := Inf]
 
   res <- list(
     Structure = terms_Structure,
@@ -159,6 +173,23 @@ import_PRTemplate_Term <- function(wb, ws) {
   res
 }
 
-import_PRTemplate_Portfolio <- function(wb, ws = "Portfolio") {
+#' @rdname import_PRTemplate
+#' @export
+import_PRTemplate_TreatyResult <- function(wb, ws) {
+  raw <- readxl_raw(wb, ws, rows = c(8, NA), cols = "B:J")
+  list_raw <- raw[, id := vec_pick(V1, "UW Year", offset = -1L, fill_direction = "down")] |>
+    split(by = "id")
 
+  num_cols <- c("UltPrem", "UltIncurred", "Comm", "TaxSurcharge", "LPC", "PC", "Margin")
+
+  TreatyRes <- rbind(
+    "HistTerm" = list_raw[[2]],
+    "AsIfTerm" = list_raw[[3]],
+    idcol = "Type"
+  )[grepl("^\\d+", V2), c(1:8, 10)]
+
+  data.table::setnames(TreatyRes, c("Type", "UY", num_cols))
+
+  TreatyRes[, UY := trimws(UY)][, (num_cols) := lapply(.SD, as.numeric), .SDcols = num_cols]
+  TreatyRes[]
 }

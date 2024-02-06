@@ -3,7 +3,6 @@
 \name{num}
 \alias{num}
 \alias{num_format}
-\alias{num_auto}
 \title{Format numbers}
 \usage{
 num(
@@ -16,18 +15,6 @@ num(
 )
 
 num_format(scale = c("auto", "free", "C", "P", "K", "M", "B"), digits = 0, ...)
-
-num_auto(
-  x,
-  prefer_digits = 0,
-  free_digits = FALSE,
-  max_digits = 4,
-  perc_cutoff = 5,
-  p = 0.95
-)
-}
-\arguments{
-\item{perc_cutoff}{The threshold for percentage format.  If most elements are lower than it, the whole vector will be formatted as percentage.}
 }
 \description{
 Format numbers
@@ -37,9 +24,4 @@ x <- c(1.23e12, 3.45e7, -6.78e3, Inf, NA)
 num(x)
 num(x, "free")
 num(x, "free", inf.as = "Unlimited", na.as = "")
-num_auto(c(NA, 100, 1000, 10))
-num_auto(c(NA, 100, 1000, 10), prefer_digits = 1)
-num_auto(c(100e6, 200e6, 300e6))
-num_auto(c(-123.456789e6, 1e9, 2e9, 0, -3e9))
-num_auto(c(-123.456789e6, 1e9, 2e9, 0, -3e9), free_digits = TRUE, max_digits = 2)
 }

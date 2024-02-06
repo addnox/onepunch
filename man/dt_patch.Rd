@@ -4,7 +4,7 @@
 \alias{dt_patch}
 \title{Patch new data y to old dataset x}
 \usage{
-dt_patch(x, y, by, vars, ties = c("y", "x"))
+dt_patch(x, y, by, vars = NULL, ties = c("y", "x"))
 }
 \arguments{
 \item{x}{Data to be patched}

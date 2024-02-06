@@ -2,6 +2,12 @@
 % Please edit documentation in R/OPT_import_PRTemplate.R
 \name{import_PRTemplate_Dev}
 \alias{import_PRTemplate_Dev}
+\alias{import_PRTemplate_Projection}
+\alias{import_PRTemplate_LRSummary}
+\alias{import_PRTemplate_EventLossSummary}
+\alias{import_PRTemplate_LargeLossSummary}
+\alias{import_PRTemplate_Term}
+\alias{import_PRTemplate_TreatyResult}
 \title{Read from GC Pro-Rata Template to get Dev table}
 \usage{
 import_PRTemplate_Dev(
@@ -12,6 +18,18 @@ import_PRTemplate_Dev(
   Large = "Large",
   Event = "CAT"
 )
+
+import_PRTemplate_Projection(wb, ws)
+
+import_PRTemplate_LRSummary(wb, ws)
+
+import_PRTemplate_EventLossSummary(wb, ws = "CAT")
+
+import_PRTemplate_LargeLossSummary(wb, ws = "Large")
+
+import_PRTemplate_Term(wb, ws)
+
+import_PRTemplate_TreatyResult(wb, ws)
 }
 \arguments{
 \item{wb}{Path of GC PR Treaty template workbook}

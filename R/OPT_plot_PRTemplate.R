@@ -51,13 +51,13 @@ op_plot_Dev <- function(
   # stack variables: they will be melt into long-data
   if (is.null(var)) {
     stack_vars <- "UltIncurred"
-  } else if (var == "POI") {## P(aid)O(S)I(BNR)
+  } else if (length(var) == 1 && var == "POI") {## P(aid)O(S)I(BNR)
     stack_vars <- c("Paid" = "ActualPaid", "O/S" = "OS", "IBNR" = "IBNR")
-  } else if (var %in% c("ALC.Ult", "ALE.Ult", "ALC.Ultimate", "ALE.Ultimate")) { ## A(ttritional)L(arge)C(aT)
+  } else if (length(var) == 1 && var %in% c("ALC.Ult", "ALE.Ult", "ALC.Ultimate", "ALE.Ultimate")) { ## A(ttritional)L(arge)C(aT)
     stack_vars <- c("Attritional" = "UltAttritional", "LargeRisk" = "UltLarge", "Event" = "UltEvent")
-  } else if (var %in% c("ALC.Actual", "ALE.Actual")) {
+  } else if (length(var) == 1 && var %in% c("ALC.Actual", "ALE.Actual")) {
     stack_vars <- c("Attritional (and IBNR)" = "DummyAttritional", "LargeRisk" = "ActualLarge", "Event" = "ActualEvent")
-  } else if (var %in% c("ALC", "ALE")) {
+  } else if (length(var) == 1 && var %in% c("ALC", "ALE")) {
     stack_vars <- c("Attritional (and IBNR)" = "DummyAttritional", "LargeRisk" = "ActualLarge", "Event" = "ActualEvent")
     warning("Actual ", var, " will be plot.  Please use ALC.Actual or ALE.Actual instead.")
   } else {

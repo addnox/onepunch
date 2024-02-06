@@ -110,7 +110,7 @@ DataTester <- R6::R6Class(
         wb <- openxlsx2::wb_add_data(wb, ws_name, ws_data, na.strings = NULL)
       }
 
-      openxlsx2::wb_save(wb, path = file, overwrite = TRUE)
+      openxlsx2::wb_save(wb, file = file, overwrite = TRUE)
       invisible(self)
     },
     #' @description
@@ -147,6 +147,8 @@ DataTester <- R6::R6Class(
 #' @examples
 #' cli_check_that(nrow(mtcars) == 32)
 #' cli_check_that(nrow(mtcars) == 31, "# of rows for `mtcars` is 31")
+#' cli_check_that(all.equal(data.frame(A = 1:3), data.frame(A = 3:1)))
+#' cli_check_that(all.equal(data.frame(A = 1:3), data.frame(A = 1:3)))
 #'
 #' @export
 cli_check_that <- function(code, desc = NULL) {
@@ -154,8 +156,8 @@ cli_check_that <- function(code, desc = NULL) {
 
   if (is.null(desc)) desc <- substitute(code)
 
-  if (is.logical(test_res) & length(test_res) == 1) {
-    if (test_res) {
+  if (length(test_res) == 1 & (is.logical(test_res) || is.character(test_res))) {
+    if (test_res == TRUE) {
       cli::cli_alert_success(desc)
     } else {
       cli::cli_alert_danger(desc)
