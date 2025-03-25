@@ -1,0 +1,26 @@
+Package: onepunch
+Title: An R toolkit for my everyday work
+Version: 0.1.0.9000
+Authors@R: 
+    person("Charles", "Pan", , "addnox@gmail.com", role = c("aut", "cre"))
+Description: `onepunch` is an R toolkit designed to accelerate modeling, pricing and risk-management analysis in reinsurance transactions
+License: file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: 
+    data.table,
+    openxlsx2,
+    R6,
+    readxl,
+    stringi
+Suggests: 
+    anytime,
+    ggplot2,
+    gt,
+    stringdist,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Depends: 
+    R (>= 4.3)
+LazyData: true
