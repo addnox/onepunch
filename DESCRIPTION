@@ -24,3 +24,5 @@ Config/testthat/edition: 3
 Depends: 
     R (>= 4.3)
 LazyData: true
+URL: https://github.com/addnox/onepunch
+BugReports: https://github.com/addnox/onepunch/issues
